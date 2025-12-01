@@ -245,7 +245,7 @@ export default function Home() {
         {/* Conversion Rate Donut */}
         <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
           <div className="mb-6">
-            <h3 className="font-bold text-slate-900 text-xl">Taxa de Conversão</h3>
+            <h3 className="font-bold text-slate-900 text-xl">Taxa de Aprovação Geral</h3>
             <p className="text-slate-500 text-sm mt-1">Distribuição total do período analisado</p>
           </div>
           
@@ -255,8 +255,8 @@ export default function Home() {
                 <PieChart>
                   <Pie
                     data={[
-                      { name: 'Aprovadas', value: kpis?.success_count || 0, color: COLORS.success },
-                      { name: 'Reprovadas', value: kpis?.failed_count || 0, color: COLORS.danger }
+                      { name: 'Aprovadas', value: (kpis?.authorization?.success || 0) + (kpis?.capture?.success || 0), color: COLORS.success },
+                      { name: 'Reprovadas', value: (kpis?.authorization?.failed || 0) + (kpis?.capture?.failed || 0), color: COLORS.danger }
                     ]}
                     cx="50%"
                     cy="50%"
@@ -267,8 +267,8 @@ export default function Home() {
                     stroke="none"
                   >
                     {[
-                      { name: 'Aprovadas', value: kpis?.success_count || 0, color: COLORS.success },
-                      { name: 'Reprovadas', value: kpis?.failed_count || 0, color: COLORS.danger }
+                      { name: 'Aprovadas', value: (kpis?.authorization?.success || 0) + (kpis?.capture?.success || 0), color: COLORS.success },
+                      { name: 'Reprovadas', value: (kpis?.authorization?.failed || 0) + (kpis?.capture?.failed || 0), color: COLORS.danger }
                     ].map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
@@ -429,15 +429,27 @@ export default function Home() {
           <div className="bg-slate-50 px-6 py-3 border-t border-slate-100 flex justify-end gap-6 text-xs font-medium text-slate-500">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#FFFBEB] border border-slate-200"></span>
-              <span>Baixo Impacto</span>
+              <span>0 Ocorrências</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded bg-[#FDE68A]"></span>
+              <span>&lt; 20</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#FCD34D]"></span>
-              <span>Médio</span>
+              <span>20 - 50</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded bg-[#FB923C]"></span>
+              <span>50 - 80</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#EF4444]"></span>
-              <span>Crítico</span>
+              <span>80 - 100</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded bg-[#991B1B]"></span>
+              <span>&gt; 100</span>
             </div>
           </div>
         </div>
