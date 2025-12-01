@@ -1,54 +1,23 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-  LineChart,
-  Line
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  PieChart, Pie, Cell, Legend
 } from "recharts";
 import { 
-  AlertCircle, 
-  CheckCircle2, 
-  XCircle, 
-  TrendingUp, 
-  CreditCard, 
-  Activity,
-  AlertTriangle,
-  ArrowRight,
-  Filter,
-  Download,
-  ChevronDown,
-  ChevronUp
+  CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
+  CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp
 } from "lucide-react";
+import { format, parseISO } from "date-fns";
 
-// Cores do gráfico
+// Cores do tema
 const COLORS = {
-  success: "#10B981", // Emerald 500
-  failed: "#EF4444",  // Red 500
-  warning: "#F59E0B", // Amber 500
-  primary: "#3B82F6", // Blue 500
-  secondary: "#6366F1", // Indigo 500
-  neutral: "#64748B"  // Slate 500
-};
-
-// Cores para o heatmap
-const HEATMAP_COLORS = {
-  low: "#FEF3C7",    // Amber 100
-  medium: "#F59E0B", // Amber 500
-  high: "#B45309",   // Amber 700
-  critical: "#78350F" // Amber 900
+  primary: "#0052CC",
+  success: "#10B981",
+  danger: "#F43F5E",
+  warning: "#F59E0B",
+  neutral: "#94A3B8",
+  slate: "#475569"
 };
 
 export default function Home() {
@@ -58,12 +27,12 @@ export default function Home() {
 
   useEffect(() => {
     fetch("/data.json")
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         setData(data);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error("Erro ao carregar dados:", err);
         setLoading(false);
       });
@@ -71,493 +40,581 @@ export default function Home() {
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <p className="text-slate-500 font-medium">Carregando apresentação...</p>
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
-  if (!data) {
-    return (
-      <DashboardLayout>
-        <div className="flex flex-col items-center justify-center h-[60vh] text-slate-500">
-          <AlertCircle className="h-12 w-12 mb-4" />
-          <p>Não foi possível carregar os dados do dashboard.</p>
-        </div>
-      </DashboardLayout>
-    );
-  }
+  if (!data) return <div>Erro ao carregar dados.</div>;
 
-  // Preparar dados para o gráfico de volume diário
-  const dailyVolumeData = data.daily_data.map((day: any) => ({
-    date: new Date(day.date).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
-    Sucessos: day.success,
-    Falhas: day.failed,
-    Total: day.total
-  }));
+  const { kpis, daily_data, brand_data, error_categories, error_data, heatmap_data, heatmap_columns, card_type_data } = data;
 
-  // Preparar dados para o gráfico de conversão
-  const conversionData = [
-    { name: "Aprovadas", value: data.kpis.success_count, color: COLORS.success },
-    { name: "Reprovadas", value: data.kpis.failed_count, color: COLORS.failed }
-  ];
-
-  // Função para formatar moeda
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
-
-  // Função para determinar a cor do heatmap baseada no valor
+  // Função para determinar a cor da célula do heatmap baseada no valor
   const getHeatmapColor = (value: number) => {
-    if (value === 0) return "#F8FAFC"; // Slate 50
-    if (value < 10) return HEATMAP_COLORS.low;
-    if (value < 50) return HEATMAP_COLORS.medium;
-    if (value < 100) return HEATMAP_COLORS.high;
-    return HEATMAP_COLORS.critical;
+    if (value === 0) return '#FFFBEB'; // Amarelo muito claro
+    if (value < 20) return '#FDE68A'; // Amarelo claro
+    if (value < 50) return '#FCD34D'; // Amarelo médio
+    if (value < 80) return '#FB923C'; // Laranja
+    if (value < 100) return '#EF4444'; // Vermelho claro
+    return '#991B1B'; // Vermelho escuro
   };
 
-  // Função para determinar a cor do texto no heatmap
   const getHeatmapTextColor = (value: number) => {
-    if (value === 0) return "#94A3B8"; // Slate 400
-    if (value < 50) return "#1E293B"; // Slate 800
-    return "#FFFFFF"; // White
+    return value > 80 ? 'white' : '#1E293B';
   };
 
-  // Filtrar erros para exibição (Top 5 ou Todos)
-  const displayedErrors = showAllErrors 
-    ? data.error_data 
-    : data.error_data.slice(0, 5);
+  // Determinar quantos erros mostrar
+  const displayedErrors = showAllErrors ? error_data : error_data.slice(0, 5);
 
   return (
     <DashboardLayout>
-      {/* Header Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Performance de Pagamentos</h1>
-        <p className="text-slate-500 mt-2 text-lg">Diagnóstico de aprovação e oportunidades de recuperação de receita</p>
+      {/* Header Section - Simplified */}
+      <div id="overview" className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 scroll-mt-28">
+        <div>
+          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Performance de Pagamentos</h2>
+          <p className="text-slate-500 mt-2 text-lg">
+            Diagnóstico de aprovação e oportunidades de recuperação de receita
+          </p>
+        </div>
       </div>
 
-      {/* KPIs Principais - Segregados por Categoria */}
-      <div className="grid grid-cols-1 gap-6 mb-8">
-        <Card className="border-slate-200 shadow-sm overflow-hidden">
-          <CardHeader className="bg-slate-50/50 border-b border-slate-100 pb-4">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Filter className="h-5 w-5 text-blue-600" />
-              </div>
-              <CardTitle className="text-lg font-semibold text-slate-800">Visão Geral de Transações</CardTitle>
+      {/* KPI Section - Unified Block with Segregation */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm mb-12 overflow-hidden">
+        <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <ListFilter size={20} />
             </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-              
-              {/* Coluna: Sem Captura (Authorization Only) */}
-              <div className="p-6 hover:bg-slate-50/30 transition-colors">
-                <div className="flex items-center justify-between mb-6">
+            <h3 className="font-bold text-slate-800 text-lg">Visão Geral de Transações</h3>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+          {/* Authorization (Sem Captura) */}
+          <div className="p-8 hover:bg-slate-50/30 transition-colors">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-8 bg-blue-500 rounded-full"></span>
+                <div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-1.5 bg-blue-500 rounded-full"></div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-xl font-bold text-slate-900">Sem Captura</h3>
-                        <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 font-mono">
-                          {data.kpis?.authorization?.rate?.toFixed(2) || "0.00"}% Aprov.
-                        </Badge>
-                      </div>
-                      <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mt-0.5">Authorization Only</p>
-                    </div>
+                    <h4 className="font-bold text-slate-900 text-xl">Sem Captura</h4>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded text-xs font-bold border",
+                      kpis.authorization.rate > 50 
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                        : "bg-rose-50 text-rose-700 border-rose-200"
+                    )}>
+                      {kpis.authorization.rate}% Aprov.
+                    </span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-3xl font-bold text-slate-900 block">{data.kpis?.authorization?.total || 0}</span>
-                    <span className="text-xs text-slate-400 font-medium uppercase">Total</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                      <span className="text-xs font-bold text-emerald-700 uppercase tracking-wide">Aprovadas</span>
-                    </div>
-                    <div className="text-2xl font-bold text-emerald-700">{data.kpis?.authorization?.success || 0}</div>
-                    <div className="text-xs text-emerald-600 mt-1 font-medium">
-                      {data.kpis?.authorization?.total ? ((data.kpis.authorization.success / data.kpis.authorization.total) * 100).toFixed(2) : "0.00"}%
-                    </div>
-                  </div>
-                  <div className="bg-red-50 rounded-xl p-4 border border-red-100">
-                    <div className="flex items-center gap-2 mb-2">
-                      <XCircle className="h-4 w-4 text-red-600" />
-                      <span className="text-xs font-bold text-red-700 uppercase tracking-wide">Reprovadas</span>
-                    </div>
-                    <div className="text-2xl font-bold text-red-700">{data.kpis?.authorization?.failed || 0}</div>
-                    <div className="text-xs text-red-600 mt-1 font-medium">
-                      {data.kpis?.authorization?.total ? ((data.kpis.authorization.failed / data.kpis.authorization.total) * 100).toFixed(2) : "0.00"}%
-                    </div>
-                  </div>
+                  <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization Only</p>
                 </div>
               </div>
-
-              {/* Coluna: Com Captura (Authorization + Capture) */}
-              <div className="p-6 hover:bg-slate-50/30 transition-colors">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-1.5 bg-indigo-500 rounded-full"></div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-xl font-bold text-slate-900">Com Captura</h3>
-                        <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 font-mono">
-                          {data.kpis?.capture?.rate?.toFixed(2) || "0.00"}% Aprov.
-                        </Badge>
-                      </div>
-                      <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mt-0.5">Authorization + Capture</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-3xl font-bold text-slate-900 block">{data.kpis?.capture?.total || 0}</span>
-                    <span className="text-xs text-slate-400 font-medium uppercase">Total</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                    <div className="flex items-center gap-2 mb-2">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                      <span className="text-xs font-bold text-emerald-700 uppercase tracking-wide">Aprovadas</span>
-                    </div>
-                    <div className="text-2xl font-bold text-emerald-700">{data.kpis?.capture?.success || 0}</div>
-                    <div className="text-xs text-emerald-600 mt-1 font-medium">
-                      {data.kpis?.capture?.total ? ((data.kpis.capture.success / data.kpis.capture.total) * 100).toFixed(2) : "0.00"}%
-                    </div>
-                  </div>
-                  <div className="bg-red-50 rounded-xl p-4 border border-red-100">
-                    <div className="flex items-center gap-2 mb-2">
-                      <XCircle className="h-4 w-4 text-red-600" />
-                      <span className="text-xs font-bold text-red-700 uppercase tracking-wide">Reprovadas</span>
-                    </div>
-                    <div className="text-2xl font-bold text-red-700">{data.kpis?.capture?.failed || 0}</div>
-                    <div className="text-xs text-red-600 mt-1 font-medium">
-                      {data.kpis?.capture?.total ? ((data.kpis.capture.failed / data.kpis.capture.total) * 100).toFixed(2) : "0.00"}%
-                    </div>
-                  </div>
-                </div>
+              <div className="text-right">
+                <span className="block text-3xl font-bold text-slate-900">{kpis.authorization.total}</span>
+                <span className="text-sm text-slate-500">Total</span>
               </div>
-
             </div>
-          </CardContent>
-        </Card>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                <div className="flex items-center gap-2 mb-2 text-emerald-700">
+                  <CheckCircle2 size={16} />
+                  <span className="text-xs font-bold uppercase">Aprovadas</span>
+                </div>
+                <span className="block text-2xl font-bold text-emerald-700">{kpis.authorization.success}</span>
+                <span className="text-sm font-medium text-emerald-600/80">{kpis.authorization.rate}%</span>
+              </div>
+
+              <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
+                <div className="flex items-center gap-2 mb-2 text-rose-700">
+                  <XCircle size={16} />
+                  <span className="text-xs font-bold uppercase">Reprovadas</span>
+                </div>
+                <span className="block text-2xl font-bold text-rose-700">{kpis.authorization.failed}</span>
+                <span className="text-sm font-medium text-rose-600/80">{(100 - kpis.authorization.rate).toFixed(2)}%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Capture (Com Captura) */}
+          <div className="p-8 hover:bg-slate-50/30 transition-colors">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-8 bg-indigo-500 rounded-full"></span>
+                <div>
+                  <div className="flex items-center gap-3">
+                    <h4 className="font-bold text-slate-900 text-xl">Com Captura</h4>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded text-xs font-bold border",
+                      kpis.capture.rate > 50 
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                        : "bg-rose-50 text-rose-700 border-rose-200"
+                    )}>
+                      {kpis.capture.rate}% Aprov.
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization + Capture</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="block text-3xl font-bold text-slate-900">{kpis.capture.total}</span>
+                <span className="text-sm text-slate-500">Total</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                <div className="flex items-center gap-2 mb-2 text-emerald-700">
+                  <CheckCircle2 size={16} />
+                  <span className="text-xs font-bold uppercase">Aprovadas</span>
+                </div>
+                <span className="block text-2xl font-bold text-emerald-700">{kpis.capture.success}</span>
+                <span className="text-sm font-medium text-emerald-600/80">{kpis.capture.rate}%</span>
+              </div>
+
+              <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
+                <div className="flex items-center gap-2 mb-2 text-rose-700">
+                  <XCircle size={16} />
+                  <span className="text-xs font-bold uppercase">Reprovadas</span>
+                </div>
+                <span className="block text-2xl font-bold text-rose-700">{kpis.capture.failed}</span>
+                <span className="text-sm font-medium text-rose-600/80">{(100 - kpis.capture.rate).toFixed(2)}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Gráficos Principais */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Volume Diário */}
-        <Card className="lg:col-span-2 border-slate-200 shadow-sm">
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-lg font-semibold text-slate-800">Volume Diário de Transações</CardTitle>
-                <CardDescription>Comparativo de transações aprovadas vs recusadas</CardDescription>
+      {/* Main Charts Section */}
+      <div id="transactions" className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12 scroll-mt-28">
+        {/* Daily Volume Chart */}
+        <div className="lg:col-span-2 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h3 className="font-bold text-slate-900 text-xl">Volume Diário de Transações</h3>
+              <p className="text-slate-500 text-sm mt-1">Comparativo de transações aprovadas vs recusadas</p>
+            </div>
+            <div className="flex gap-6 text-sm font-medium">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span className="text-slate-700">Sucessos</span>
               </div>
-              <div className="flex items-center gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                  <span className="text-slate-600">Sucessos</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <span className="text-slate-600">Falhas</span>
-                </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span className="text-slate-700">Falhas</span>
               </div>
             </div>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[300px] w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={dailyVolumeData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                  <XAxis 
-                    dataKey="date" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: '#64748B', fontSize: 12 }} 
-                    dy={10}
-                  />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fill: '#64748B', fontSize: 12 }} 
-                  />
-                  <Tooltip 
-                    cursor={{ fill: '#F1F5F9' }}
-                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                  />
-                  <Bar dataKey="Sucessos" stackId="a" fill={COLORS.success} radius={[0, 0, 4, 4]} barSize={32} />
-                  <Bar dataKey="Falhas" stackId="a" fill={COLORS.failed} radius={[4, 4, 0, 0]} barSize={32} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+          
+          <div className="h-[350px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={daily_data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                <XAxis 
+                  dataKey="date" 
+                  tickFormatter={(val) => format(parseISO(val), "dd/MM")}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#64748B', fontSize: 12 }}
+                  dy={10}
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#64748B', fontSize: 12 }}
+                />
+                <Tooltip 
+                  cursor={{ fill: '#F8FAFC' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                />
+                <Bar dataKey="success" name="Sucessos" stackId="a" fill={COLORS.success} radius={[0, 0, 0, 0]} barSize={24} />
+                <Bar dataKey="failed" name="Falhas" stackId="a" fill={COLORS.danger} radius={[4, 4, 0, 0]} barSize={24} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-        {/* Taxa de Conversão */}
-        <Card className="border-slate-200 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold text-slate-800">Taxa de Conversão</CardTitle>
-            <CardDescription>Distribuição total do período analisado</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-[220px] w-full relative">
+        {/* Approval Rate Gauge/Pie */}
+        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+          <h3 className="font-bold text-slate-900 text-xl mb-2">Taxa de Conversão</h3>
+          <p className="text-sm text-slate-500 mb-8">Distribuição total do período analisado</p>
+          
+          <div className="flex-1 flex items-center justify-center relative">
+            <div className="h-[260px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={conversionData}
+                    data={[
+                      { name: 'Aprovadas', value: kpis.success_count },
+                      { name: 'Recusadas', value: kpis.failed_count }
+                    ]}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
+                    innerRadius={70}
+                    outerRadius={90}
                     paddingAngle={5}
                     dataKey="value"
                   >
-                    {conversionData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} strokeWidth={0} />
-                    ))}
+                    <Cell key="cell-0" fill={COLORS.success} />
+                    <Cell key="cell-1" fill={COLORS.danger} />
                   </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                  <Tooltip />
+                  <Legend verticalAlign="bottom" height={36} iconType="circle" />
                 </PieChart>
               </ResponsiveContainer>
-              {/* Centro do Donut */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                <span className="text-3xl font-bold text-slate-900">{data.kpis?.approval_rate?.toFixed(1) || "0.0"}%</span>
-                <span className="text-xs text-slate-500 block uppercase tracking-wide font-medium">Aprovação</span>
+            </div>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-10">
+              <div className="text-center">
+                <span className="block text-4xl font-bold text-slate-900 tracking-tight">{kpis.approval_rate}%</span>
+                <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Aprovação</span>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Error Heatmap Section */}
+      <div id="heatmap" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-orange-100 rounded-xl text-orange-600">
+            <Grid size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900 text-xl">Distribuição de Erros por Bandeira</h3>
+            <p className="text-sm text-slate-500 mt-1">Mapa de calor identificando concentração de falhas</p>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <div className="min-w-[800px]">
+            {/* Header Row */}
+            <div className="grid grid-cols-[150px_repeat(8,1fr)] gap-1 mb-1">
+              <div className="font-bold text-slate-500 text-sm flex items-end pb-2">Bandeira</div>
+              {heatmap_columns.map((col: string) => (
+                <div key={col} className="font-bold text-slate-500 text-xs text-center pb-2 rotate-0">
+                  {col}
+                </div>
+              ))}
+            </div>
+
+            {/* Data Rows */}
+            {heatmap_data.map((row: any) => (
+              <div key={row.brand} className="grid grid-cols-[150px_repeat(8,1fr)] gap-1 mb-1">
+                <div className="font-bold text-slate-800 text-sm flex items-center uppercase">
+                  {row.brand}
+                </div>
+                {heatmap_columns.map((col: string) => {
+                  const value = row[col] || 0;
+                  return (
+                    <div 
+                      key={`${row.brand}-${col}`}
+                      className="h-16 flex items-center justify-center rounded font-bold text-sm transition-all hover:scale-105 cursor-default"
+                      style={{ 
+                        backgroundColor: getHeatmapColor(value),
+                        color: getHeatmapTextColor(value)
+                      }}
+                      title={`${row.brand} - ${col}: ${value} ocorrências`}
+                    >
+                      {value}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
             
-            <div className="mt-6 space-y-3">
-              <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-100">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                  <span className="text-sm font-medium text-emerald-900">Aprovadas</span>
-                </div>
-                <span className="text-sm font-bold text-emerald-700">{data.kpis?.success_count || 0}</span>
+            {/* Legend */}
+            <div className="flex justify-end items-center gap-4 mt-6 text-xs text-slate-500">
+              <span>Escala de Ocorrências:</span>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#FFFBEB]"></span> 0
               </div>
-              <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-red-500"></div>
-                  <span className="text-sm font-medium text-red-900">Reprovadas</span>
-                </div>
-                <span className="text-sm font-bold text-red-700">{data.kpis?.failed_count || 0}</span>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#FDE68A]"></span> &lt; 20
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#FCD34D]"></span> &lt; 50
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#FB923C]"></span> &lt; 80
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#EF4444]"></span> &lt; 100
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#991B1B]"></span> 100+
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      {/* Performance por Tipo de Cartão */}
-      <div className="mb-8">
-        <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <CreditCard className="h-5 w-5 text-blue-600" />
-          Performance por Tipo de Cartão
-        </h2>
+      {/* Card Type Analysis with Brand Breakdown */}
+      <div id="card-types" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600">
+            <Wallet size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900 text-xl">Performance por Tipo de Cartão</h3>
+            <p className="text-sm text-slate-500 mt-1">Análise comparativa entre modalidades de pagamento e bandeiras</p>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {data.card_type_data?.map((type: any, index: number) => (
-            <Card key={index} className="border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg font-bold capitalize text-slate-800">
-                      {type.type === 'credit' ? 'Crédito' : 
-                       type.type === 'debit' ? 'Débito' : 
-                       type.type === 'multiple' ? 'Múltiplo' : type.type}
-                    </CardTitle>
-                    <CardDescription className="text-xs font-medium uppercase tracking-wider mt-1">
-                      {type.total} Transações
-                    </CardDescription>
+          {card_type_data.map((type: any, index: number) => (
+            <div key={index} className="bg-slate-50 p-6 rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <h4 className="font-bold text-slate-800 capitalize text-lg">{type.type}</h4>
+                <span className={cn(
+                  "px-2 py-1 rounded text-xs font-bold",
+                  type.approval_rate > 50 ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"
+                )}>
+                  {type.approval_rate}% Aprov.
+                </span>
+              </div>
+              
+              <div className="space-y-4">
+                {/* Barra de progresso geral */}
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-slate-500">Total</span>
+                    <span className="font-medium text-slate-900">{type.total}</span>
                   </div>
-                  <Badge variant={type.approval_rate >= 70 ? "default" : "destructive"} className={type.approval_rate >= 70 ? "bg-emerald-500 hover:bg-emerald-600" : ""}>
-                    {type.approval_rate?.toFixed(1) || "0.0"}%
-                  </Badge>
+                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div 
+                      className="bg-indigo-500 h-full rounded-full" 
+                      style={{ width: '100%' }}
+                    ></div>
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {/* Barra de Progresso */}
-                  <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden flex">
-                    <div 
-                      className="h-full bg-emerald-500" 
-                      style={{ width: `${type.approval_rate || 0}%` }}
-                    ></div>
-                    <div 
-                      className="h-full bg-red-500" 
-                      style={{ width: `${100 - (type.approval_rate || 0)}%` }}
-                    ></div>
-                  </div>
-                  
-                  <div className="flex justify-between text-sm">
-                    <div className="flex flex-col">
-                      <span className="text-emerald-600 font-bold">{type.success || 0}</span>
-                      <span className="text-xs text-slate-400">Aprovadas</span>
-                    </div>
-                    <div className="flex flex-col text-right">
-                      <span className="text-red-600 font-bold">{type.failed || 0}</span>
-                      <span className="text-xs text-slate-400">Reprovadas</span>
-                    </div>
-                  </div>
 
-                  {/* Detalhamento por Bandeira */}
-                  {type.brands && type.brands.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-slate-100">
-                      <p className="text-xs font-semibold text-slate-500 uppercase mb-3">Por Bandeira</p>
-                      <div className="space-y-3">
-                        {type.brands.map((brand: any, idx: number) => (
-                          <div key={idx} className="flex items-center justify-between text-sm">
-                            <div className="flex items-center gap-2">
-                              <div className={`w-2 h-2 rounded-full ${brand.brand === 'visa' ? 'bg-blue-600' : 'bg-orange-500'}`}></div>
-                              <span className="capitalize text-slate-700 font-medium">{brand.brand}</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-slate-400 text-xs">{brand.total} txns</span>
-                              <span className={`font-bold ${brand.rate >= 70 ? 'text-emerald-600' : 'text-red-600'}`}>
-                                {brand.rate?.toFixed(1) || "0.0"}%
-                              </span>
-                            </div>
-                          </div>
-                        ))}
+                {/* Detalhamento por Bandeira */}
+                <div className="pt-2 border-t border-slate-200">
+                  <p className="text-xs font-bold text-slate-400 uppercase mb-2">Por Bandeira</p>
+                  <div className="space-y-2">
+                    {type.brands && type.brands.map((brand: any, bIndex: number) => (
+                      <div key={bIndex} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                          <span className="capitalize text-slate-700 font-medium">{brand.brand}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-slate-500 text-xs">{brand.total} txns</span>
+                          <span className={cn(
+                            "font-bold text-xs",
+                            brand.rate > 50 ? "text-emerald-600" : "text-rose-600"
+                          )}>
+                            {brand.rate}%
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      {/* Performance por Bandeira (Heatmap de Erros) */}
-      <div className="mb-8">
-        <h2 className="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
-          <Activity className="h-5 w-5 text-blue-600" />
-          Distribuição de Erros por Bandeira
-        </h2>
-        <Card className="border-slate-200 shadow-sm overflow-hidden">
-          <CardContent className="p-6">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-3 bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider rounded-tl-lg">Bandeira</th>
-                    {data.heatmap_columns?.map((col: string) => (
-                      <th key={col} className="px-4 py-3 bg-slate-50 text-slate-500 font-semibold uppercase tracking-wider text-center">
-                        {col}
-                      </th>
                     ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {data.heatmap_data?.map((row: any) => (
-                    <tr key={row.brand}>
-                      <td className="px-4 py-4 font-bold text-slate-900 capitalize bg-slate-50/30 border-r border-slate-100">
-                        {row.brand}
-                      </td>
-                      {data.heatmap_columns?.map((col: string) => {
-                        const value = row[col] || 0;
-                        return (
-                          <td 
-                            key={`${row.brand}-${col}`} 
-                            className="px-4 py-4 text-center font-bold transition-colors hover:opacity-90 cursor-default"
-                            style={{ 
-                              backgroundColor: getHeatmapColor(value),
-                              color: getHeatmapTextColor(value)
-                            }}
-                            title={`${value} ocorrências de ${col} em ${row.brand}`}
-                          >
-                            {value}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-4 flex items-center justify-end gap-4 text-xs text-slate-500">
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded bg-[#FEF3C7]"></div>
-                <span>Baixo Impacto</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded bg-[#F59E0B]"></div>
-                <span>Médio</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded bg-[#B45309]"></div>
-                <span>Alto</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded bg-[#78350F]"></div>
-                <span>Crítico</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Lista de Erros */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-blue-600" />
-            Principais Motivos de Recusa
-          </h2>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => setShowAllErrors(!showAllErrors)}
-            className="text-slate-600"
-          >
-            {showAllErrors ? (
-              <>
-                <ChevronUp className="h-4 w-4 mr-2" />
-                Mostrar Menos
-              </>
-            ) : (
-              <>
-                <ChevronDown className="h-4 w-4 mr-2" />
-                Ver Todos ({data.error_data?.length || 0})
-              </>
-            )}
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-1 gap-4">
-          {displayedErrors?.map((error: any, index: number) => (
-            <Card key={index} className="border-slate-200 shadow-sm hover:border-blue-200 transition-colors group">
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex flex-col items-center justify-center w-16 h-16 bg-red-50 rounded-lg border border-red-100 group-hover:bg-red-100 transition-colors">
-                    <span className="text-xl font-bold text-red-700">{error.percentage?.toFixed(1) || "0.0"}%</span>
-                    <span className="text-[10px] text-red-600 uppercase font-bold">Impacto</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Badge variant="outline" className="bg-slate-100 text-slate-700 border-slate-200 font-mono">
-                        {error.code}
-                      </Badge>
-                      <span className="text-sm text-slate-500 font-medium">{error.count} ocorrências</span>
-                    </div>
-                    <p className="text-slate-900 font-medium">{error.details}</p>
                   </div>
                 </div>
-                <div className="hidden md:block">
-                  <ArrowRight className="h-5 w-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
+                
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
+                  <div className="text-center p-2 bg-white rounded border border-slate-100">
+                    <span className="block text-xs text-emerald-600 font-bold">Aprovados</span>
+                    <span className="block font-bold text-slate-700">{type.success}</span>
+                  </div>
+                  <div className="text-center p-2 bg-white rounded border border-slate-100">
+                    <span className="block text-xs text-rose-600 font-bold">Falhas</span>
+                    <span className="block font-bold text-slate-700">{type.failed}</span>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       </div>
 
+      {/* Card Brands Analysis (Moved Here) */}
+      <div id="brands" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-purple-100 rounded-xl text-purple-600">
+            <CreditCard size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900 text-xl">Performance por Bandeira</h3>
+            <p className="text-sm text-slate-500 mt-1">Comparativo de aprovação entre processadoras</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {brand_data.map((brand: any, index: number) => (
+            <div key={index} className="flex flex-col p-6 bg-slate-50 rounded-xl border border-slate-100">
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                  {/* Brand Logo Placeholder */}
+                  <div className="w-10 h-6 bg-slate-200 rounded flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase">
+                    {brand.brand.substring(0, 3)}
+                  </div>
+                  <span className="text-xl font-bold text-slate-800 capitalize">{brand.brand}</span>
+                </div>
+                <div className="text-right">
+                  <span className="block text-xs text-slate-500 uppercase font-bold mb-1">Taxa de Aprovação</span>
+                  <span className={cn(
+                    "text-3xl font-bold tracking-tight",
+                    brand.approval_rate > 50 ? "text-emerald-600" : "text-rose-600"
+                  )}>
+                    {brand.approval_rate}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="w-full bg-slate-200 h-4 rounded-full mb-6 overflow-hidden">
+                <div 
+                  className={cn(
+                    "h-full rounded-full transition-all duration-1000",
+                    brand.approval_rate > 50 ? "bg-emerald-500" : "bg-rose-500"
+                  )}
+                  style={{ width: `${brand.approval_rate}%` }}
+                ></div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+                  <span className="block text-xs text-slate-400 uppercase font-bold mb-1">Total</span>
+                  <span className="block text-lg font-bold text-slate-800">{brand.total}</span>
+                </div>
+                <div className="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">
+                  <span className="block text-xs text-emerald-600 uppercase font-bold mb-1">Aprovados</span>
+                  <span className="block text-lg font-bold text-emerald-700">{brand.success}</span>
+                </div>
+                <div className="bg-rose-50/50 p-3 rounded-lg border border-rose-100">
+                  <span className="block text-xs text-rose-600 uppercase font-bold mb-1">Falhas</span>
+                  <span className="block text-lg font-bold text-rose-700">{brand.failed}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Error Analysis Section */}
+      <div id="errors" className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 scroll-mt-28">
+        {/* Top Errors List */}
+        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-rose-100 rounded-xl text-rose-600">
+                <AlertCircle size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 text-xl">Motivos de Recusa</h3>
+                <p className="text-sm text-slate-500 mt-1">Detalhamento dos códigos de erro</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setShowAllErrors(!showAllErrors)}
+              className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors"
+            >
+              {showAllErrors ? (
+                <>
+                  <ChevronUp size={16} />
+                  Recolher
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  Ver todos ({error_data.length})
+                </>
+              )}
+            </button>
+          </div>
+
+          <div className="space-y-5">
+            {displayedErrors.map((error: any, index: number) => (
+              <div key={index} className="group">
+                <div className="flex justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs font-mono font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">
+                      {error.code}
+                    </span>
+                    <span className="font-medium text-slate-700 text-sm group-hover:text-slate-900 transition-colors">
+                      {error.details.length > 45 ? error.details.substring(0, 45) + '...' : error.details}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="block font-bold text-rose-600">{error.count}</span>
+                  </div>
+                </div>
+                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-rose-500 h-full rounded-full transition-all duration-1000 ease-out" 
+                    style={{ width: `${error.percentage}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-end mt-1">
+                  <span className="text-xs font-medium text-slate-400">{error.percentage}% do total</span>
+                </div>
+              </div>
+            ))}
+            
+            {!showAllErrors && error_data.length > 5 && (
+              <div className="pt-4 text-center border-t border-slate-100">
+                <button 
+                  onClick={() => setShowAllErrors(true)}
+                  className="text-sm text-slate-500 hover:text-blue-600 font-medium transition-colors"
+                >
+                  + {error_data.length - 5} outros motivos de recusa
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Error Categories */}
+        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm h-fit">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="p-3 bg-blue-100 rounded-xl text-blue-600">
+              <ShieldAlert size={24} />
+            </div>
+            <div>
+              <h3 className="font-bold text-slate-900 text-xl">Diagnóstico por Categoria</h3>
+              <p className="text-sm text-slate-500 mt-1">Agrupamento de impacto</p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {error_categories.slice(0, 3).map((cat: any, index: number) => (
+              <div key={index} className="border border-slate-100 bg-slate-50/50 rounded-xl p-5 hover:border-blue-200 transition-colors">
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="font-bold text-slate-800 text-lg">{cat.name}</h4>
+                  <span className="px-3 py-1 bg-white text-slate-700 text-xs font-bold rounded-full border border-slate-200 shadow-sm">
+                    {cat.count} ocorrências
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex-1 bg-slate-200 h-2.5 rounded-full overflow-hidden">
+                    <div 
+                      className={cn(
+                        "h-full rounded-full",
+                        index === 0 ? "bg-rose-500" : 
+                        index === 1 ? "bg-orange-500" : 
+                        "bg-blue-500"
+                      )}
+                      style={{ width: `${cat.percentage}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-bold text-slate-600 w-12 text-right">{cat.percentage}%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </DashboardLayout>
   );
+}
+
+// Helper para classes condicionais
+function cn(...classes: (string | undefined | null | false)[]) {
+  return classes.filter(Boolean).join(' ');
 }
