@@ -405,5 +405,34 @@
     "ABECS-57",
     "ABECS-57",
     "GEN-002"
+  ],
+  "card_type_data": [
+    {
+      "type": "multiple",
+      "total": 836,
+      "success": 344,
+      "failed": 492,
+      "approval_rate": 41.15,
+      "value_success": 800.0,
+      "value_failed": 0.0
+    },
+    {
+      "type": "credit",
+      "total": 422,
+      "success": 212,
+      "failed": 210,
+      "approval_rate": 50.24,
+      "value_success": 400.0,
+      "value_failed": 0.0
+    },
+    {
+      "type": "debit",
+      "total": 19,
+      "success": 0,
+      "failed": 19,
+      "approval_rate": 0.0,
+      "value_success": 0.0,
+      "value_failed": 0.0
+    }
   ]
 }

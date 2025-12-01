@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import { 
   CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
-  CheckCircle2, XCircle, ListFilter, Grid
+  CheckCircle2, XCircle, ListFilter, Grid, Wallet
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
@@ -50,7 +50,7 @@ export default function Home() {
 
   if (!data) return <div>Erro ao carregar dados.</div>;
 
-  const { kpis, daily_data, brand_data, error_categories, error_data, heatmap_data, heatmap_columns } = data;
+  const { kpis, daily_data, brand_data, error_categories, error_data, heatmap_data, heatmap_columns, card_type_data } = data;
 
   // Função para determinar a cor da célula do heatmap baseada no valor
   const getHeatmapColor = (value: number) => {
@@ -220,7 +220,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Error Heatmap Section (New) */}
+      {/* Error Heatmap Section */}
       <div id="heatmap" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
         <div className="flex items-center gap-4 mb-8">
           <div className="p-3 bg-orange-100 rounded-xl text-orange-600">
@@ -292,6 +292,59 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Card Type Analysis (New) */}
+      <div id="card-types" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600">
+            <Wallet size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900 text-xl">Performance por Tipo de Cartão</h3>
+            <p className="text-sm text-slate-500 mt-1">Análise comparativa entre modalidades de pagamento</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {card_type_data.map((type: any, index: number) => (
+            <div key={index} className="bg-slate-50 p-6 rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors">
+              <div className="flex justify-between items-start mb-4">
+                <h4 className="font-bold text-slate-800 capitalize text-lg">{type.type}</h4>
+                <span className={cn(
+                  "px-2 py-1 rounded text-xs font-bold",
+                  type.approval_rate > 50 ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"
+                )}>
+                  {type.approval_rate}% Aprov.
+                </span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-slate-500">Total</span>
+                  <span className="font-medium text-slate-900">{type.total}</span>
+                </div>
+                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-indigo-500 h-full rounded-full" 
+                    style={{ width: '100%' }}
+                  ></div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  <div className="text-center p-2 bg-white rounded border border-slate-100">
+                    <span className="block text-xs text-emerald-600 font-bold">Aprovados</span>
+                    <span className="block font-bold text-slate-700">{type.success}</span>
+                  </div>
+                  <div className="text-center p-2 bg-white rounded border border-slate-100">
+                    <span className="block text-xs text-rose-600 font-bold">Falhas</span>
+                    <span className="block font-bold text-slate-700">{type.failed}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
