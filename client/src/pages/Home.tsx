@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
-import KpiCard from "@/components/KpiCard";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, Legend
 } from "recharts";
 import { 
-  Activity, CreditCard, AlertCircle, CheckCircle2, XCircle, 
-  Calendar, ShieldAlert, Info, TrendingUp, RefreshCcw, Target
+  CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
+  CheckCircle2, XCircle, ListFilter
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
 
 // Cores do tema
 const COLORS = {
@@ -54,17 +52,9 @@ export default function Home() {
 
   const { kpis, daily_data, brand_data, error_categories, error_data } = data;
 
-  // Formatar moeda
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-  };
-
   return (
     <DashboardLayout>
-      {/* Header Section with Date Filter */}
+      {/* Header Section - Simplified */}
       <div id="overview" className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 scroll-mt-28">
         <div>
           <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Performance de Pagamentos</h2>
@@ -72,114 +62,59 @@ export default function Home() {
             Diagnóstico de aprovação e oportunidades de recuperação de receita
           </p>
         </div>
-        
-        <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-lg border border-slate-200 shadow-sm text-sm font-medium text-slate-700">
-          <Calendar size={18} className="text-slate-400" />
-          <span>
-            {format(parseISO(kpis.period_start), "dd 'de' MMM, yyyy", { locale: ptBR })} 
-            {' - '} 
-            {format(parseISO(kpis.period_end), "dd 'de' MMM, yyyy", { locale: ptBR })}
-          </span>
-        </div>
       </div>
 
-      {/* KPI Grid - Updated Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        {/* Taxa de Aprovação Detalhada */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-l-rose-500">
+      {/* KPI Grid - Simplified to 3 Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        {/* Total de Transações */}
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Taxa de Aprovação</h3>
-            <div className="text-slate-400 bg-slate-50 p-2 rounded-lg"><Activity size={20} /></div>
+            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Total de Transações</h3>
+            <div className="text-slate-400 bg-slate-50 p-2 rounded-lg"><ListFilter size={20} /></div>
           </div>
           
-          <div className="flex items-baseline gap-2 mb-2">
-            <span className="text-3xl font-bold text-rose-600 tracking-tight">
-              {kpis.approval_rate}%
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-bold text-slate-900 tracking-tight">
+              {kpis.total_transactions}
             </span>
           </div>
-          
-          <div className="flex items-center gap-2 text-sm mb-4">
-            <span className="flex items-center gap-1 font-medium px-2 py-0.5 rounded-full text-xs text-rose-700 bg-rose-50">
-              <Target size={14} />
-              -{kpis.approval_gap}% da meta
-            </span>
-            <span className="text-slate-500 text-xs">Meta: {kpis.approval_goal_min}-{kpis.approval_goal_max}%</span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100">
-            <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Autorização</span>
-              <span className="text-sm font-semibold text-slate-700">{kpis.approval_rate}%</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Captura</span>
-              <span className="text-sm font-semibold text-slate-700">100%</span>
-            </div>
-          </div>
+          <div className="mt-2 text-sm text-slate-500">Volume total processado</div>
         </div>
 
-        {/* Valor Aprovado Detalhado */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+        {/* Quantidade Aprovada */}
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-l-emerald-500">
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Valor Aprovado</h3>
-            <div className="text-slate-400 bg-slate-50 p-2 rounded-lg"><CheckCircle2 size={20} /></div>
+            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Transações Aprovadas</h3>
+            <div className="text-emerald-600 bg-emerald-50 p-2 rounded-lg"><CheckCircle2 size={20} /></div>
           </div>
           
-          <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-3xl font-bold text-emerald-600 tracking-tight">
-              {formatCurrency(kpis.total_approved)}
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-bold text-emerald-600 tracking-tight">
+              {kpis.success_count}
+            </span>
+            <span className="text-lg font-medium text-emerald-600/80 ml-1">
+              ({kpis.approval_rate}%)
             </span>
           </div>
-
-          <div className="grid grid-cols-2 gap-2 pt-3 border-t border-slate-100">
-            <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Autorizado</span>
-              <span className="text-xs font-semibold text-slate-700">{formatCurrency(kpis.auth_success_amount)}</span>
-            </div>
-            <div>
-              <span className="text-[10px] text-slate-400 uppercase font-bold block">Capturado</span>
-              <span className="text-xs font-semibold text-slate-700">{formatCurrency(kpis.capture_success_amount)}</span>
-            </div>
-          </div>
+          <div className="mt-2 text-sm text-slate-500">Sucesso na autorização</div>
         </div>
 
-        {/* Reembolsos */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
+        {/* Quantidade Reprovada */}
+        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-l-rose-500">
           <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Reembolsos</h3>
-            <div className="text-slate-400 bg-slate-50 p-2 rounded-lg"><RefreshCcw size={20} /></div>
+            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Transações Reprovadas</h3>
+            <div className="text-rose-600 bg-rose-50 p-2 rounded-lg"><XCircle size={20} /></div>
           </div>
           
-          <div className="flex items-baseline gap-2 mb-4">
-            <span className="text-3xl font-bold text-slate-900 tracking-tight">
-              {kpis.refund_count}
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-bold text-rose-600 tracking-tight">
+              {kpis.failed_count}
             </span>
-            <span className="text-sm text-slate-500 font-medium">({kpis.refund_rate}%)</span>
+            <span className="text-lg font-medium text-rose-600/80 ml-1">
+              ({(100 - kpis.approval_rate).toFixed(2)}%)
+            </span>
           </div>
-
-          <div className="pt-3 border-t border-slate-100">
-            <span className="text-[10px] text-slate-400 uppercase font-bold block">Valor Reembolsado</span>
-            <span className="text-lg font-semibold text-slate-700">{formatCurrency(kpis.refund_amount)}</span>
-          </div>
-        </div>
-
-        {/* Ticket Médio */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Ticket Médio</h3>
-            <div className="text-slate-400 bg-slate-50 p-2 rounded-lg"><DollarSign size={20} /></div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4 h-full items-center">
-            <div>
-              <span className="text-2xl font-bold text-emerald-600 block">{formatCurrency(kpis.avg_ticket_approved)}</span>
-              <span className="text-[10px] text-slate-400 uppercase font-bold">Aprovados</span>
-            </div>
-            <div className="border-l border-slate-100 pl-4">
-              <span className="text-xl font-bold text-rose-600 block">{formatCurrency(kpis.avg_ticket_failed)}</span>
-              <span className="text-[10px] text-slate-400 uppercase font-bold">Falhas</span>
-            </div>
-          </div>
+          <div className="mt-2 text-sm text-slate-500">Falhas e recusas</div>
         </div>
       </div>
 
@@ -487,24 +422,4 @@ export default function Home() {
 // Helper para classes condicionais
 function cn(...classes: (string | undefined | null | false)[]) {
   return classes.filter(Boolean).join(' ');
-}
-
-function DollarSign({ size, className }: { size?: number, className?: string }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width={size || 24} 
-      height={size || 24} 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <line x1="12" y1="1" x2="12" y2="23"></line>
-      <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-    </svg>
-  );
 }
