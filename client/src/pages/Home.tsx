@@ -9,6 +9,7 @@ import {
   CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
+import { cn } from "@/lib/utils";
 
 // Cores do tema
 const COLORS = {
@@ -68,7 +69,7 @@ export default function Home() {
   };
 
   // Determinar quantos erros mostrar
-  const displayedErrors = showAllErrors ? error_data : error_data.slice(0, 5);
+  const displayedErrors = showAllErrors ? error_data : error_data?.slice(0, 5);
 
   return (
     <DashboardLayout>
@@ -104,18 +105,18 @@ export default function Home() {
                     <h4 className="font-bold text-slate-900 text-xl">Sem Captura</h4>
                     <span className={cn(
                       "px-2 py-0.5 rounded text-xs font-bold border",
-                      kpis.authorization.rate > 50 
+                      (kpis?.authorization?.rate || 0) > 50 
                         ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
                         : "bg-rose-50 text-rose-700 border-rose-200"
                     )}>
-                      {kpis.authorization.rate}% Aprov.
+                      {kpis?.authorization?.rate?.toFixed(2) || "0.00"}% Aprov.
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization Only</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="block text-3xl font-bold text-slate-900">{kpis.authorization.total}</span>
+                <span className="block text-3xl font-bold text-slate-900">{kpis?.authorization?.total || 0}</span>
                 <span className="text-sm text-slate-500">Total</span>
               </div>
             </div>
@@ -126,8 +127,8 @@ export default function Home() {
                   <CheckCircle2 size={16} />
                   <span className="text-xs font-bold uppercase">Aprovadas</span>
                 </div>
-                <span className="block text-2xl font-bold text-emerald-700">{kpis.authorization.success}</span>
-                <span className="text-sm font-medium text-emerald-600/80">{kpis.authorization.rate}%</span>
+                <span className="block text-2xl font-bold text-emerald-700">{kpis?.authorization?.success || 0}</span>
+                <span className="text-sm font-medium text-emerald-600/80">{kpis?.authorization?.rate?.toFixed(2) || "0.00"}%</span>
               </div>
 
               <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
@@ -135,8 +136,8 @@ export default function Home() {
                   <XCircle size={16} />
                   <span className="text-xs font-bold uppercase">Reprovadas</span>
                 </div>
-                <span className="block text-2xl font-bold text-rose-700">{kpis.authorization.failed}</span>
-                <span className="text-sm font-medium text-rose-600/80">{(100 - kpis.authorization.rate).toFixed(2)}%</span>
+                <span className="block text-2xl font-bold text-rose-700">{kpis?.authorization?.failed || 0}</span>
+                <span className="text-sm font-medium text-rose-600/80">{((100 - (kpis?.authorization?.rate || 0))).toFixed(2)}%</span>
               </div>
             </div>
           </div>
@@ -151,18 +152,18 @@ export default function Home() {
                     <h4 className="font-bold text-slate-900 text-xl">Com Captura</h4>
                     <span className={cn(
                       "px-2 py-0.5 rounded text-xs font-bold border",
-                      kpis.capture.rate > 50 
+                      (kpis?.capture?.rate || 0) > 50 
                         ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
                         : "bg-rose-50 text-rose-700 border-rose-200"
                     )}>
-                      {kpis.capture.rate}% Aprov.
+                      {kpis?.capture?.rate?.toFixed(2) || "0.00"}% Aprov.
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization + Capture</p>
                 </div>
               </div>
               <div className="text-right">
-                <span className="block text-3xl font-bold text-slate-900">{kpis.capture.total}</span>
+                <span className="block text-3xl font-bold text-slate-900">{kpis?.capture?.total || 0}</span>
                 <span className="text-sm text-slate-500">Total</span>
               </div>
             </div>
@@ -173,8 +174,8 @@ export default function Home() {
                   <CheckCircle2 size={16} />
                   <span className="text-xs font-bold uppercase">Aprovadas</span>
                 </div>
-                <span className="block text-2xl font-bold text-emerald-700">{kpis.capture.success}</span>
-                <span className="text-sm font-medium text-emerald-600/80">{kpis.capture.rate}%</span>
+                <span className="block text-2xl font-bold text-emerald-700">{kpis?.capture?.success || 0}</span>
+                <span className="text-sm font-medium text-emerald-600/80">{kpis?.capture?.rate?.toFixed(2) || "0.00"}%</span>
               </div>
 
               <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
@@ -182,8 +183,8 @@ export default function Home() {
                   <XCircle size={16} />
                   <span className="text-xs font-bold uppercase">Reprovadas</span>
                 </div>
-                <span className="block text-2xl font-bold text-rose-700">{kpis.capture.failed}</span>
-                <span className="text-sm font-medium text-rose-600/80">{(100 - kpis.capture.rate).toFixed(2)}%</span>
+                <span className="block text-2xl font-bold text-rose-700">{kpis?.capture?.failed || 0}</span>
+                <span className="text-sm font-medium text-rose-600/80">{((100 - (kpis?.capture?.rate || 0))).toFixed(2)}%</span>
               </div>
             </div>
           </div>
@@ -232,26 +233,28 @@ export default function Home() {
                   cursor={{ fill: '#F8FAFC' }}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                 />
-                <Bar dataKey="success" name="Sucessos" stackId="a" fill={COLORS.success} radius={[0, 0, 0, 0]} barSize={24} />
-                <Bar dataKey="failed" name="Falhas" stackId="a" fill={COLORS.danger} radius={[4, 4, 0, 0]} barSize={24} />
+                <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 0, 4, 4]} barSize={32} />
+                <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[4, 4, 0, 0]} barSize={32} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Approval Rate Gauge/Pie */}
+        {/* Conversion Rate Donut */}
         <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-          <h3 className="font-bold text-slate-900 text-xl mb-2">Taxa de Conversão</h3>
-          <p className="text-sm text-slate-500 mb-8">Distribuição total do período analisado</p>
+          <div className="mb-6">
+            <h3 className="font-bold text-slate-900 text-xl">Taxa de Conversão</h3>
+            <p className="text-slate-500 text-sm mt-1">Distribuição total do período analisado</p>
+          </div>
           
-          <div className="flex-1 flex items-center justify-center relative">
-            <div className="h-[260px] w-full">
+          <div className="flex-1 flex flex-col justify-center items-center relative">
+            <div className="h-[220px] w-full relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={[
-                      { name: 'Aprovadas', value: kpis.success_count },
-                      { name: 'Recusadas', value: kpis.failed_count }
+                      { name: 'Aprovadas', value: kpis?.success_count || 0, color: COLORS.success },
+                      { name: 'Reprovadas', value: kpis?.failed_count || 0, color: COLORS.danger }
                     ]}
                     cx="50%"
                     cy="50%"
@@ -259,362 +262,245 @@ export default function Home() {
                     outerRadius={90}
                     paddingAngle={5}
                     dataKey="value"
+                    stroke="none"
                   >
-                    <Cell key="cell-0" fill={COLORS.success} />
-                    <Cell key="cell-1" fill={COLORS.danger} />
+                    {[
+                      { name: 'Aprovadas', value: kpis?.success_count || 0, color: COLORS.success },
+                      { name: 'Reprovadas', value: kpis?.failed_count || 0, color: COLORS.danger }
+                    ].map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
                   </Pie>
-                  <Tooltip />
-                  <Legend verticalAlign="bottom" height={36} iconType="circle" />
+                  <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                 </PieChart>
               </ResponsiveContainer>
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none pb-10">
-              <div className="text-center">
-                <span className="block text-4xl font-bold text-slate-900 tracking-tight">{kpis.approval_rate}%</span>
-                <span className="text-xs text-slate-500 uppercase font-bold tracking-wider mt-1 block">Aprovação</span>
+              
+              {/* Center Text */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="text-4xl font-bold text-slate-900">{kpis?.approval_rate?.toFixed(1) || "0.0"}%</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Aprovação</span>
               </div>
             </div>
+
+
           </div>
         </div>
       </div>
 
-      {/* Error Heatmap Section */}
-      <div id="heatmap" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-orange-100 rounded-xl text-orange-600">
-            <Grid size={24} />
+      {/* Card Type Performance */}
+      <div id="cards" className="mb-12 scroll-mt-28">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+            <CreditCard size={20} />
           </div>
-          <div>
-            <h3 className="font-bold text-slate-900 text-xl">Distribuição de Erros por Bandeira</h3>
-            <p className="text-sm text-slate-500 mt-1">Mapa de calor identificando concentração de falhas</p>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          <div className="min-w-[800px]">
-            {/* Header Row */}
-            <div className="grid grid-cols-[150px_repeat(8,1fr)] gap-1 mb-1">
-              <div className="font-bold text-slate-500 text-sm flex items-end pb-2">Bandeira</div>
-              {heatmap_columns.map((col: string) => (
-                <div key={col} className="font-bold text-slate-500 text-xs text-center pb-2 rotate-0">
-                  {col}
-                </div>
-              ))}
-            </div>
-
-            {/* Data Rows */}
-            {heatmap_data.map((row: any) => (
-              <div key={row.brand} className="grid grid-cols-[150px_repeat(8,1fr)] gap-1 mb-1">
-                <div className="font-bold text-slate-800 text-sm flex items-center uppercase">
-                  {row.brand}
-                </div>
-                {heatmap_columns.map((col: string) => {
-                  const value = row[col] || 0;
-                  return (
-                    <div 
-                      key={`${row.brand}-${col}`}
-                      className="h-16 flex items-center justify-center rounded font-bold text-sm transition-all hover:scale-105 cursor-default"
-                      style={{ 
-                        backgroundColor: getHeatmapColor(value),
-                        color: getHeatmapTextColor(value)
-                      }}
-                      title={`${row.brand} - ${col}: ${value} ocorrências`}
-                    >
-                      {value}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-            
-            {/* Legend */}
-            <div className="flex justify-end items-center gap-4 mt-6 text-xs text-slate-500">
-              <span>Escala de Ocorrências:</span>
-              <div className="flex items-center gap-1">
-                <span className="w-4 h-4 rounded bg-[#FFFBEB]"></span> 0
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-4 h-4 rounded bg-[#FDE68A]"></span> &lt; 20
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-4 h-4 rounded bg-[#FCD34D]"></span> &lt; 50
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-4 h-4 rounded bg-[#FB923C]"></span> &lt; 80
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-4 h-4 rounded bg-[#EF4444]"></span> &lt; 100
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-4 h-4 rounded bg-[#991B1B]"></span> 100+
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Card Type Analysis with Brand Breakdown */}
-      <div id="card-types" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600">
-            <Wallet size={24} />
-          </div>
-          <div>
-            <h3 className="font-bold text-slate-900 text-xl">Performance por Tipo de Cartão</h3>
-            <p className="text-sm text-slate-500 mt-1">Análise comparativa entre modalidades de pagamento e bandeiras</p>
-          </div>
+          <h3 className="font-bold text-slate-800 text-xl">Performance por Tipo de Cartão</h3>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {card_type_data.map((type: any, index: number) => (
-            <div key={index} className="bg-slate-50 p-6 rounded-xl border border-slate-100 hover:border-indigo-200 transition-colors">
+          {card_type_data?.map((type: any, index: number) => (
+            <div key={index} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
               <div className="flex justify-between items-start mb-4">
-                <h4 className="font-bold text-slate-800 capitalize text-lg">{type.type}</h4>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-lg capitalize">
+                    {type.type === 'credit' ? 'Crédito' : 
+                     type.type === 'debit' ? 'Débito' : 
+                     type.type === 'multiple' ? 'Múltiplo' : type.type}
+                  </h4>
+                  <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">{type.total} Transações</span>
+                </div>
                 <span className={cn(
                   "px-2 py-1 rounded text-xs font-bold",
-                  type.approval_rate > 50 ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"
+                  (type.approval_rate || 0) >= 70 ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"
                 )}>
-                  {type.approval_rate}% Aprov.
+                  {type.approval_rate?.toFixed(1) || "0.0"}%
                 </span>
               </div>
-              
-              <div className="space-y-4">
-                {/* Barra de progresso geral */}
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-slate-500">Total</span>
-                    <span className="font-medium text-slate-900">{type.total}</span>
-                  </div>
-                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                    <div 
-                      className="bg-indigo-500 h-full rounded-full" 
-                      style={{ width: '100%' }}
-                    ></div>
-                  </div>
-                </div>
 
-                {/* Detalhamento por Bandeira */}
-                <div className="pt-2 border-t border-slate-200">
-                  <p className="text-xs font-bold text-slate-400 uppercase mb-2">Por Bandeira</p>
-                  <div className="space-y-2">
-                    {type.brands && type.brands.map((brand: any, bIndex: number) => (
-                      <div key={bIndex} className="flex items-center justify-between text-sm">
+              {/* Progress Bar */}
+              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden flex mb-4">
+                <div 
+                  className="h-full bg-emerald-500" 
+                  style={{ width: `${type.approval_rate || 0}%` }}
+                ></div>
+                <div 
+                  className="h-full bg-rose-500" 
+                  style={{ width: `${100 - (type.approval_rate || 0)}%` }}
+                ></div>
+              </div>
+              
+              <div className="flex justify-between text-sm mb-6">
+                <div className="flex flex-col">
+                  <span className="text-emerald-600 font-bold">{type.success || 0}</span>
+                  <span className="text-xs text-slate-400">Aprovadas</span>
+                </div>
+                <div className="flex flex-col text-right">
+                  <span className="text-rose-600 font-bold">{type.failed || 0}</span>
+                  <span className="text-xs text-slate-400">Reprovadas</span>
+                </div>
+              </div>
+
+              {/* Brand Breakdown */}
+              {type.brands && type.brands.length > 0 && (
+                <div className="pt-4 border-t border-slate-100">
+                  <p className="text-xs font-bold text-slate-400 uppercase mb-3">Por Bandeira</p>
+                  <div className="space-y-3">
+                    {type.brands.map((brand: any, idx: number) => (
+                      <div key={idx} className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                          <div className={cn(
+                            "w-2 h-2 rounded-full",
+                            brand.brand === 'visa' ? 'bg-blue-600' : 'bg-orange-500'
+                          )}></div>
                           <span className="capitalize text-slate-700 font-medium">{brand.brand}</span>
                         </div>
                         <div className="flex items-center gap-3">
-                          <span className="text-slate-500 text-xs">{brand.total} txns</span>
+                          <span className="text-slate-400 text-xs">{brand.total} txns</span>
                           <span className={cn(
-                            "font-bold text-xs",
-                            brand.rate > 50 ? "text-emerald-600" : "text-rose-600"
+                            "font-bold",
+                            (brand.rate || 0) >= 70 ? 'text-emerald-600' : 'text-rose-600'
                           )}>
-                            {brand.rate}%
+                            {brand.rate?.toFixed(1) || "0.0"}%
                           </span>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
-                  <div className="text-center p-2 bg-white rounded border border-slate-100">
-                    <span className="block text-xs text-emerald-600 font-bold">Aprovados</span>
-                    <span className="block font-bold text-slate-700">{type.success}</span>
-                  </div>
-                  <div className="text-center p-2 bg-white rounded border border-slate-100">
-                    <span className="block text-xs text-rose-600 font-bold">Falhas</span>
-                    <span className="block font-bold text-slate-700">{type.failed}</span>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           ))}
         </div>
       </div>
 
-      {/* Card Brands Analysis (Moved Here) */}
-      <div id="brands" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-purple-100 rounded-xl text-purple-600">
-            <CreditCard size={24} />
+      {/* Brand Performance (Heatmap) */}
+      <div id="brands" className="mb-12 scroll-mt-28">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+            <Grid size={20} />
           </div>
-          <div>
-            <h3 className="font-bold text-slate-900 text-xl">Performance por Bandeira</h3>
-            <p className="text-sm text-slate-500 mt-1">Comparativo de aprovação entre processadoras</p>
-          </div>
+          <h3 className="font-bold text-slate-800 text-xl">Distribuição de Erros por Bandeira</h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {brand_data.map((brand: any, index: number) => (
-            <div key={index} className="flex flex-col p-6 bg-slate-50 rounded-xl border border-slate-100">
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
-                  {/* Brand Logo Placeholder */}
-                  <div className="w-10 h-6 bg-slate-200 rounded flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase">
-                    {brand.brand.substring(0, 3)}
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead>
+                <tr>
+                  <th className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs border-b border-slate-100">
+                    Bandeira
+                  </th>
+                  {heatmap_columns?.map((col: string) => (
+                    <th key={col} className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs text-center border-b border-slate-100">
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {heatmap_data?.map((row: any) => (
+                  <tr key={row.brand} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 font-bold text-slate-900 capitalize border-r border-slate-100 bg-slate-50/30">
+                      {row.brand}
+                    </td>
+                    {heatmap_columns?.map((col: string) => {
+                      const value = row[col] || 0;
+                      return (
+                        <td 
+                          key={`${row.brand}-${col}`} 
+                          className="px-6 py-4 text-center font-bold transition-all duration-200 hover:scale-105 cursor-default"
+                          style={{ 
+                            backgroundColor: getHeatmapColor(value),
+                            color: getHeatmapTextColor(value)
+                          }}
+                          title={`${value} ocorrências de ${col} em ${row.brand}`}
+                        >
+                          {value}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
+          <div className="bg-slate-50 px-6 py-3 border-t border-slate-100 flex justify-end gap-6 text-xs font-medium text-slate-500">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded bg-[#FFFBEB] border border-slate-200"></span>
+              <span>Baixo Impacto</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded bg-[#FCD34D]"></span>
+              <span>Médio</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded bg-[#EF4444]"></span>
+              <span>Crítico</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Error Analysis */}
+      <div id="errors" className="mb-12 scroll-mt-28">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <AlertCircle size={20} />
+            </div>
+            <h3 className="font-bold text-slate-800 text-xl">Principais Motivos de Recusa</h3>
+          </div>
+          
+          <button 
+            onClick={() => setShowAllErrors(!showAllErrors)}
+            className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors"
+          >
+            {showAllErrors ? (
+              <>
+                <ChevronUp size={16} />
+                Mostrar Menos
+              </>
+            ) : (
+              <>
+                <ChevronDown size={16} />
+                Ver Todos ({error_data?.length || 0})
+              </>
+            )}
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          {displayedErrors?.map((error: any, index: number) => (
+            <div key={index} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
+              <div className="flex justify-between items-start mb-3">
+                <div className="flex-1 pr-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs font-mono font-bold border border-slate-200">
+                      {error.code}
+                    </span>
+                    <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
+                      {error.count} falhas
+                    </span>
                   </div>
-                  <span className="text-xl font-bold text-slate-800 capitalize">{brand.brand}</span>
+                  <h4 className="font-bold text-slate-800 text-sm md:text-base mt-1">
+                    {error.details}
+                  </h4>
                 </div>
-                <div className="text-right">
-                  <span className="block text-xs text-slate-500 uppercase font-bold mb-1">Taxa de Aprovação</span>
-                  <span className={cn(
-                    "text-3xl font-bold tracking-tight",
-                    brand.approval_rate > 50 ? "text-emerald-600" : "text-rose-600"
-                  )}>
-                    {brand.approval_rate}%
-                  </span>
+                <div className="text-right shrink-0">
+                  <span className="text-lg font-bold text-slate-900">{error.percentage?.toFixed(1) || "0.0"}%</span>
                 </div>
               </div>
               
-              <div className="w-full bg-slate-200 h-4 rounded-full mb-6 overflow-hidden">
+              <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
                 <div 
-                  className={cn(
-                    "h-full rounded-full transition-all duration-1000",
-                    brand.approval_rate > 50 ? "bg-emerald-500" : "bg-rose-500"
-                  )}
-                  style={{ width: `${brand.approval_rate}%` }}
+                  className="bg-rose-500 h-2.5 rounded-full transition-all duration-500" 
+                  style={{ width: `${error.percentage || 0}%` }}
                 ></div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                  <span className="block text-xs text-slate-400 uppercase font-bold mb-1">Total</span>
-                  <span className="block text-lg font-bold text-slate-800">{brand.total}</span>
-                </div>
-                <div className="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">
-                  <span className="block text-xs text-emerald-600 uppercase font-bold mb-1">Aprovados</span>
-                  <span className="block text-lg font-bold text-emerald-700">{brand.success}</span>
-                </div>
-                <div className="bg-rose-50/50 p-3 rounded-lg border border-rose-100">
-                  <span className="block text-xs text-rose-600 uppercase font-bold mb-1">Falhas</span>
-                  <span className="block text-lg font-bold text-rose-700">{brand.failed}</span>
-                </div>
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* Error Analysis Section */}
-      <div id="errors" className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 scroll-mt-28">
-        {/* Top Errors List */}
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-rose-100 rounded-xl text-rose-600">
-                <AlertCircle size={24} />
-              </div>
-              <div>
-                <h3 className="font-bold text-slate-900 text-xl">Motivos de Recusa</h3>
-                <p className="text-sm text-slate-500 mt-1">Detalhamento dos códigos de erro</p>
-              </div>
-            </div>
-            <button 
-              onClick={() => setShowAllErrors(!showAllErrors)}
-              className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors"
-            >
-              {showAllErrors ? (
-                <>
-                  <ChevronUp size={16} />
-                  Recolher
-                </>
-              ) : (
-                <>
-                  <ChevronDown size={16} />
-                  Ver todos ({error_data.length})
-                </>
-              )}
-            </button>
-          </div>
-
-          <div className="space-y-5">
-            {displayedErrors.map((error: any, index: number) => (
-              <div key={index} className="group">
-                <div className="flex justify-between mb-2">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded">
-                      {error.code}
-                    </span>
-                    <span className="font-medium text-slate-700 text-sm group-hover:text-slate-900 transition-colors">
-                      {error.details.length > 45 ? error.details.substring(0, 45) + '...' : error.details}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <span className="block font-bold text-rose-600">{error.count}</span>
-                  </div>
-                </div>
-                <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                  <div 
-                    className="bg-rose-500 h-full rounded-full transition-all duration-1000 ease-out" 
-                    style={{ width: `${error.percentage}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-end mt-1">
-                  <span className="text-xs font-medium text-slate-400">{error.percentage}% do total</span>
-                </div>
-              </div>
-            ))}
-            
-            {!showAllErrors && error_data.length > 5 && (
-              <div className="pt-4 text-center border-t border-slate-100">
-                <button 
-                  onClick={() => setShowAllErrors(true)}
-                  className="text-sm text-slate-500 hover:text-blue-600 font-medium transition-colors"
-                >
-                  + {error_data.length - 5} outros motivos de recusa
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Error Categories */}
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm h-fit">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-blue-100 rounded-xl text-blue-600">
-              <ShieldAlert size={24} />
-            </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-xl">Diagnóstico por Categoria</h3>
-              <p className="text-sm text-slate-500 mt-1">Agrupamento de impacto</p>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            {error_categories.slice(0, 3).map((cat: any, index: number) => (
-              <div key={index} className="border border-slate-100 bg-slate-50/50 rounded-xl p-5 hover:border-blue-200 transition-colors">
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="font-bold text-slate-800 text-lg">{cat.name}</h4>
-                  <span className="px-3 py-1 bg-white text-slate-700 text-xs font-bold rounded-full border border-slate-200 shadow-sm">
-                    {cat.count} ocorrências
-                  </span>
-                </div>
-                
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex-1 bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                    <div 
-                      className={cn(
-                        "h-full rounded-full",
-                        index === 0 ? "bg-rose-500" : 
-                        index === 1 ? "bg-orange-500" : 
-                        "bg-blue-500"
-                      )}
-                      style={{ width: `${cat.percentage}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-sm font-bold text-slate-600 w-12 text-right">{cat.percentage}%</span>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </DashboardLayout>
   );
-}
-
-// Helper para classes condicionais
-function cn(...classes: (string | undefined | null | false)[]) {
-  return classes.filter(Boolean).join(' ');
 }
