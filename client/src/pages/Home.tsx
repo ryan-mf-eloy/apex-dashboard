@@ -8,7 +8,8 @@ import {
   CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
   CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp
 } from "lucide-react";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, differenceInDays, min, max } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
 // Cores do tema
@@ -56,6 +57,13 @@ export default function Home() {
 
   const { kpis, daily_data, brand_data, error_categories, error_data, heatmap_data, heatmap_columns, card_type_data } = data;
 
+  // Calcular período e dias
+  const dates = data.transactions?.map((t: any) => parseISO(t.date)) || [];
+  const startDate = dates.length > 0 ? min(dates) : new Date();
+  const endDate = dates.length > 0 ? max(dates) : new Date();
+  const daysCount = differenceInDays(endDate, startDate) + 1;
+  const periodString = `${format(startDate, "dd 'de' MMMM", { locale: ptBR })} a ${format(endDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`;
+
   // Função para determinar a cor da célula do heatmap baseada no valor
   const getHeatmapColor = (value: number) => {
     if (value === 0) return '#FFFBEB'; // Amarelo muito claro
@@ -82,6 +90,13 @@ export default function Home() {
           <p className="text-slate-500 mt-2 text-lg">
             Diagnóstico de aprovação e oportunidades de recuperação de receita
           </p>
+        </div>
+        <div className="flex flex-col items-end justify-center bg-white px-6 py-3 rounded-xl border border-slate-200 shadow-sm">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Período Analisado</span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-slate-900 font-bold text-lg">{periodString}</span>
+            <span className="text-slate-500 text-sm font-medium">({daysCount} dias)</span>
+          </div>
         </div>
       </div>
 
