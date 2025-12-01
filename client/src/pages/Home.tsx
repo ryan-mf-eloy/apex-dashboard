@@ -329,7 +329,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Card Type Analysis */}
+      {/* Card Type Analysis with Brand Breakdown */}
       <div id="card-types" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
         <div className="flex items-center gap-4 mb-8">
           <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600">
@@ -337,7 +337,7 @@ export default function Home() {
           </div>
           <div>
             <h3 className="font-bold text-slate-900 text-xl">Performance por Tipo de Cartão</h3>
-            <p className="text-sm text-slate-500 mt-1">Análise comparativa entre modalidades de pagamento</p>
+            <p className="text-sm text-slate-500 mt-1">Análise comparativa entre modalidades de pagamento e bandeiras</p>
           </div>
         </div>
 
@@ -354,19 +354,46 @@ export default function Home() {
                 </span>
               </div>
               
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Total</span>
-                  <span className="font-medium text-slate-900">{type.total}</span>
+              <div className="space-y-4">
+                {/* Barra de progresso geral */}
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-slate-500">Total</span>
+                    <span className="font-medium text-slate-900">{type.total}</span>
+                  </div>
+                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div 
+                      className="bg-indigo-500 h-full rounded-full" 
+                      style={{ width: '100%' }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                  <div 
-                    className="bg-indigo-500 h-full rounded-full" 
-                    style={{ width: '100%' }}
-                  ></div>
+
+                {/* Detalhamento por Bandeira */}
+                <div className="pt-2 border-t border-slate-200">
+                  <p className="text-xs font-bold text-slate-400 uppercase mb-2">Por Bandeira</p>
+                  <div className="space-y-2">
+                    {type.brands && type.brands.map((brand: any, bIndex: number) => (
+                      <div key={bIndex} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+                          <span className="capitalize text-slate-700 font-medium">{brand.brand}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-slate-500 text-xs">{brand.total} txns</span>
+                          <span className={cn(
+                            "font-bold text-xs",
+                            brand.rate > 50 ? "text-emerald-600" : "text-rose-600"
+                          )}>
+                            {brand.rate}%
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 
-                <div className="grid grid-cols-2 gap-2 pt-2">
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
                   <div className="text-center p-2 bg-white rounded border border-slate-100">
                     <span className="block text-xs text-emerald-600 font-bold">Aprovados</span>
                     <span className="block font-bold text-slate-700">{type.success}</span>

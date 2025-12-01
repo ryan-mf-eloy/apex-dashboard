@@ -428,7 +428,23 @@
       "failed": 492,
       "approval_rate": 41.15,
       "value_success": 800.0,
-      "value_failed": 0.0
+      "value_failed": 0.0,
+      "brands": [
+        {
+          "brand": "mastercard",
+          "total": 481,
+          "success": 188,
+          "failed": 293,
+          "rate": 39.09
+        },
+        {
+          "brand": "visa",
+          "total": 355,
+          "success": 156,
+          "failed": 199,
+          "rate": 43.94
+        }
+      ]
     },
     {
       "type": "credit",
@@ -437,7 +453,23 @@
       "failed": 210,
       "approval_rate": 50.24,
       "value_success": 400.0,
-      "value_failed": 0.0
+      "value_failed": 0.0,
+      "brands": [
+        {
+          "brand": "mastercard",
+          "total": 211,
+          "success": 96,
+          "failed": 115,
+          "rate": 45.5
+        },
+        {
+          "brand": "visa",
+          "total": 211,
+          "success": 116,
+          "failed": 95,
+          "rate": 54.98
+        }
+      ]
     },
     {
       "type": "debit",
@@ -446,7 +478,23 @@
       "failed": 19,
       "approval_rate": 0.0,
       "value_success": 0.0,
-      "value_failed": 0.0
+      "value_failed": 0.0,
+      "brands": [
+        {
+          "brand": "visa",
+          "total": 10,
+          "success": 0,
+          "failed": 10,
+          "rate": 0.0
+        },
+        {
+          "brand": "mastercard",
+          "total": 9,
+          "success": 0,
+          "failed": 9,
+          "rate": 0.0
+        }
+      ]
     }
   ]
 }
