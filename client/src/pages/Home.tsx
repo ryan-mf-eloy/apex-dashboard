@@ -501,6 +501,80 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Recent Transactions Table */}
+      <div id="transactions-list" className="mb-12 scroll-mt-28">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+            <ListFilter size={20} />
+          </div>
+          <h3 className="font-bold text-slate-800 text-xl">Últimas Transações</h3>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Data</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Status</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Valor</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Cartão</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Detalhes</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {data.transactions?.map((txn: any, index: number) => {
+                  const isSuccess = txn.status === 'authorized' || txn.status === 'captured';
+                  return (
+                    <tr key={index} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="px-6 py-4 text-slate-600 font-medium whitespace-nowrap">
+                        {txn.date ? format(parseISO(txn.date), "dd/MM/yyyy HH:mm") : "-"}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={cn(
+                          "px-2 py-1 rounded text-xs font-bold border uppercase",
+                          isSuccess 
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                            : "bg-rose-50 text-rose-700 border-rose-200"
+                        )}>
+                          {isSuccess ? "Aprovada" : "Recusada"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-bold text-slate-900">
+                        R$ {txn.amount?.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <span className="capitalize text-slate-700 font-medium">{txn.brand || "N/A"}</span>
+                          <span className="text-slate-400 text-xs uppercase">({txn.type || "N/A"})</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {isSuccess ? (
+                          <span className="text-slate-400 text-xs italic">Transação autorizada com sucesso</span>
+                        ) : (
+                          <div className="flex flex-col">
+                            <span className="text-rose-600 font-bold text-xs">{txn.reason_code}</span>
+                            <span className="text-slate-500 text-xs truncate max-w-[200px]" title={txn.reason_details}>
+                              {txn.reason_details}
+                            </span>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {(!data.transactions || data.transactions.length === 0) && (
+            <div className="p-8 text-center text-slate-500">
+              Nenhuma transação recente encontrada.
+            </div>
+          )}
+        </div>
+      </div>
     </DashboardLayout>
   );
 }

@@ -392,7 +392,7 @@
       ],
       "count": 210,
       "percentage": 29.09,
-      "recommendation": "Implementar ZeroAuth para validação prévia de cartão"
+      "recommendation": "Implementar ZeroAuth para valida\u00e7\u00e3o pr\u00e9via de cart\u00e3o"
     },
     {
       "key": "fraud",
@@ -407,7 +407,7 @@
     },
     {
       "key": "card_restrictions",
-      "name": "Restrições do Cartão",
+      "name": "Restri\u00e7\u00f5es do Cart\u00e3o",
       "codes": [
         "ABECS-57",
         "ABECS-82",
@@ -416,22 +416,22 @@
       ],
       "count": 153,
       "percentage": 21.19,
-      "recommendation": "Validar cartão antes do checkout com ZeroAuth"
+      "recommendation": "Validar cart\u00e3o antes do checkout com ZeroAuth"
     },
     {
       "key": "technical_errors",
-      "name": "Erros Técnicos",
+      "name": "Erros T\u00e9cnicos",
       "codes": [
         "GEN-002",
         "AQS-005"
       ],
       "count": 64,
       "percentage": 8.86,
-      "recommendation": "Implementar retry automático e monitoramento"
+      "recommendation": "Implementar retry autom\u00e1tico e monitoramento"
     },
     {
       "key": "card_validity",
-      "name": "Validade do Cartão",
+      "name": "Validade do Cart\u00e3o",
       "codes": [
         "ABECS-54",
         "ABECS-78",
@@ -439,18 +439,18 @@
       ],
       "count": 38,
       "percentage": 5.26,
-      "recommendation": "Implementar validação de dados antes da transação"
+      "recommendation": "Implementar valida\u00e7\u00e3o de dados antes da transa\u00e7\u00e3o"
     },
     {
       "key": "security_issues",
-      "name": "Problemas de Segurança",
+      "name": "Problemas de Seguran\u00e7a",
       "codes": [
         "ABECS-N7",
         "ABECS-63"
       ],
       "count": 29,
       "percentage": 4.02,
-      "recommendation": "Melhorar validação de CVV no frontend"
+      "recommendation": "Melhorar valida\u00e7\u00e3o de CVV no frontend"
     }
   ],
   "heatmap_data": [
@@ -556,6 +556,558 @@
           "rate": 0.0
         }
       ]
+    }
+  ],
+  "transactions": [
+    {
+      "id": "4d5d1a33-c955-4585-870b-017e26f8cac6",
+      "date": "2025-12-01 14:06:12.668+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "21ae1b59-4d43-4367-9e7c-9924d55d8c2f",
+      "date": "2025-12-01 13:38:27.512+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "8898e484-0516-4ce1-8de4-396d612085f9",
+      "date": "2025-12-01 13:36:35.791+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "f9e4a502-64ce-4698-ad80-ce8dc345eec0",
+      "date": "2025-12-01 13:28:55.434+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "8a38736f-3178-4e2c-af2c-fc7bdce054d3",
+      "date": "2025-12-01 12:51:54.163+00",
+      "amount": 400.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "payment"
+    },
+    {
+      "id": "9d81fa9a-7d7a-4fee-b70d-2d08e7c90beb",
+      "date": "2025-12-01 12:51:54.125+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "89e9ab20-967d-4ee6-82fc-3fb875e63a3f",
+      "date": "2025-12-01 12:50:50.785+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "eff2ebe9-537e-4e4b-b747-757aefa66302",
+      "date": "2025-12-01 12:48:07.364+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "ce14d605-4029-45c0-8405-d63849756ae2",
+      "date": "2025-12-01 12:44:24.317+00",
+      "amount": 1145.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "b63e7d4f-d5d4-4f38-af85-da279454c286",
+      "date": "2025-12-01 12:10:39.812+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "e987a5d1-f3cc-45fc-9b0b-84f66c0d03b2",
+      "date": "2025-12-01 12:05:07.3+00",
+      "amount": 916.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "add5fd9a-9623-40dd-85fb-b2422d38fa38",
+      "date": "2025-12-01 12:02:47.165+00",
+      "amount": 1145.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "76df9a95-2d9e-44a7-b062-78eb315276ca",
+      "date": "2025-12-01 11:40:39.828+00",
+      "amount": 1145.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "b5577cc6-3ae8-44dc-8291-3d67571a2205",
+      "date": "2025-12-01 11:35:24.274+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "5e6a5b1e-1da6-4641-a23e-7fdb5e1754b6",
+      "date": "2025-12-01 11:10:34.057+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "76071971-a3ca-4b0f-9f14-0dfec259099c",
+      "date": "2025-12-01 11:05:21.52+00",
+      "amount": 578.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "a949edd1-a357-47b3-88ce-af547bc20a68",
+      "date": "2025-12-01 10:49:58.938+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "3f48bba8-bb50-41e6-bef7-b8a91db5f673",
+      "date": "2025-12-01 10:46:06.848+00",
+      "amount": 916.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "ecf3a1b2-6351-4fe5-b9b3-8bc659b016c3",
+      "date": "2025-12-01 09:52:06.761+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "915f81d0-335d-4f88-8b43-5b2a70c298a1",
+      "date": "2025-12-01 05:01:47.095+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "4fe2d989-4558-4bd6-9a32-a2a901307284",
+      "date": "2025-12-01 02:48:05.666+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "4f69ea65-f49b-47f3-8af7-48126ed8c1c0",
+      "date": "2025-12-01 02:40:27.348+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "903d2b58-3d3f-4949-a6a1-9d410706be7a",
+      "date": "2025-12-01 02:34:45.921+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "3a745103-11aa-416c-ab8b-516949e6193b",
+      "date": "2025-12-01 01:02:22.53+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "b9493f72-f662-4103-bb20-ed6e629cc57a",
+      "date": "2025-12-01 00:33:57.811+00",
+      "amount": 916.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "12e2a2d4-8bea-4921-b273-cbccfda7f30d",
+      "date": "2025-12-01 00:28:18.931+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "cancellation"
+    },
+    {
+      "id": "48a44af4-8076-4ca6-8126-fbd93fd06151",
+      "date": "2025-12-01 00:15:07.387+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "c9f04aae-e880-4ad1-bddb-f5a5f2cb0051",
+      "date": "2025-11-30 23:56:06.142+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "1b406088-3302-4821-8739-f85e75134e76",
+      "date": "2025-11-30 22:36:59.456+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "4780084e-bf55-4d65-b7e6-38770da2a37b",
+      "date": "2025-11-30 21:38:05.622+00",
+      "amount": 1145.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "c964cc66-b35a-4f29-91d6-112fe6a3048d",
+      "date": "2025-11-30 21:11:07.624+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "ecf14f83-17d3-47b0-9e89-8cc9dbc8294e",
+      "date": "2025-11-30 19:38:20.523+00",
+      "amount": 1145.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "d5e42618-f709-471d-b60d-c6b68a2d78cc",
+      "date": "2025-11-30 19:18:14.218+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "3ba6d0f9-e795-46f4-8269-6ec0b6672e6f",
+      "date": "2025-11-30 19:11:19.215+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "64b33552-4961-44aa-8017-eb839cf13f4f",
+      "date": "2025-11-30 17:59:17.62+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "44e356fe-170f-4660-b873-8ef532f9a0e9",
+      "date": "2025-11-30 17:34:23.178+00",
+      "amount": 1145.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "b196149b-1c12-4c86-a41b-37232a730ac3",
+      "date": "2025-11-30 17:24:20.362+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "5630feba-bbff-4cd6-9b95-85e4784f0042",
+      "date": "2025-11-30 17:23:24.703+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "43d42df6-95c9-4428-8bc1-a8c9ced63759",
+      "date": "2025-11-30 17:22:22.052+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "3e57f878-8675-4749-a329-aafc691c7aab",
+      "date": "2025-11-30 16:49:40.897+00",
+      "amount": 867.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "ace7086d-ff7a-49d4-abc9-9b176cc0977e",
+      "date": "2025-11-30 16:45:32.742+00",
+      "amount": 916.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "fb63f1a0-c3a4-4006-b32e-b5a1d5185fa7",
+      "date": "2025-11-30 16:38:23.68+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "2b6c7028-baf1-4ec8-8241-3888d5ea3edd",
+      "date": "2025-11-30 16:27:24.16+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "bf0f829e-75d9-4751-bc62-b55adf723434",
+      "date": "2025-11-30 16:20:59.471+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "75730008-321a-46d6-b26e-13fb7571887a",
+      "date": "2025-11-30 16:16:56.69+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "2cead30f-aa73-495b-aa04-b5f289a2d7bc",
+      "date": "2025-11-30 15:32:37.328+00",
+      "amount": 0.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "e7d3b731-c29e-455d-bd27-2077dc185f44",
+      "date": "2025-11-30 15:25:19.848+00",
+      "amount": 1145.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "a4cca74d-e368-45bf-9370-c2fde41fef49",
+      "date": "2025-11-30 15:21:00.047+00",
+      "amount": 867.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
+    },
+    {
+      "id": "905ca698-efe0-495c-9739-486bfa62033b",
+      "date": "2025-11-30 15:20:39.267+00",
+      "amount": 0.0,
+      "status": "failed",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "authorization"
+    },
+    {
+      "id": "306bef2a-d430-4de2-b866-7ffe098df261",
+      "date": "2025-11-30 15:03:57.549+00",
+      "amount": 916.0,
+      "status": "success",
+      "brand": "unknown",
+      "type": "unknown",
+      "reason_code": "",
+      "reason_details": "",
+      "category": "capture"
     }
   ]
 }
