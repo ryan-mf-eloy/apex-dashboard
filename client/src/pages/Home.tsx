@@ -100,7 +100,17 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-8 bg-blue-500 rounded-full"></span>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-xl">Sem Captura</h4>
+                  <div className="flex items-center gap-3">
+                    <h4 className="font-bold text-slate-900 text-xl">Sem Captura</h4>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded text-xs font-bold border",
+                      kpis.authorization.rate > 50 
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                        : "bg-rose-50 text-rose-700 border-rose-200"
+                    )}>
+                      {kpis.authorization.rate}% Aprov.
+                    </span>
+                  </div>
                   <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization Only</p>
                 </div>
               </div>
@@ -137,7 +147,17 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-8 bg-indigo-500 rounded-full"></span>
                 <div>
-                  <h4 className="font-bold text-slate-900 text-xl">Com Captura</h4>
+                  <div className="flex items-center gap-3">
+                    <h4 className="font-bold text-slate-900 text-xl">Com Captura</h4>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded text-xs font-bold border",
+                      kpis.capture.rate > 50 
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                        : "bg-rose-50 text-rose-700 border-rose-200"
+                    )}>
+                      {kpis.capture.rate}% Aprov.
+                    </span>
+                  </div>
                   <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization + Capture</p>
                 </div>
               </div>
