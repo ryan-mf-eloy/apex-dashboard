@@ -409,6 +409,69 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Card Brands Analysis (Moved Here) */}
+      <div id="brands" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-purple-100 rounded-xl text-purple-600">
+            <CreditCard size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900 text-xl">Performance por Bandeira</h3>
+            <p className="text-sm text-slate-500 mt-1">Comparativo de aprovação entre processadoras</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {brand_data.map((brand: any, index: number) => (
+            <div key={index} className="flex flex-col p-6 bg-slate-50 rounded-xl border border-slate-100">
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center gap-3">
+                  {/* Brand Logo Placeholder */}
+                  <div className="w-10 h-6 bg-slate-200 rounded flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase">
+                    {brand.brand.substring(0, 3)}
+                  </div>
+                  <span className="text-xl font-bold text-slate-800 capitalize">{brand.brand}</span>
+                </div>
+                <div className="text-right">
+                  <span className="block text-xs text-slate-500 uppercase font-bold mb-1">Taxa de Aprovação</span>
+                  <span className={cn(
+                    "text-3xl font-bold tracking-tight",
+                    brand.approval_rate > 50 ? "text-emerald-600" : "text-rose-600"
+                  )}>
+                    {brand.approval_rate}%
+                  </span>
+                </div>
+              </div>
+              
+              <div className="w-full bg-slate-200 h-4 rounded-full mb-6 overflow-hidden">
+                <div 
+                  className={cn(
+                    "h-full rounded-full transition-all duration-1000",
+                    brand.approval_rate > 50 ? "bg-emerald-500" : "bg-rose-500"
+                  )}
+                  style={{ width: `${brand.approval_rate}%` }}
+                ></div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
+                  <span className="block text-xs text-slate-400 uppercase font-bold mb-1">Total</span>
+                  <span className="block text-lg font-bold text-slate-800">{brand.total}</span>
+                </div>
+                <div className="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">
+                  <span className="block text-xs text-emerald-600 uppercase font-bold mb-1">Aprovados</span>
+                  <span className="block text-lg font-bold text-emerald-700">{brand.success}</span>
+                </div>
+                <div className="bg-rose-50/50 p-3 rounded-lg border border-rose-100">
+                  <span className="block text-xs text-rose-600 uppercase font-bold mb-1">Falhas</span>
+                  <span className="block text-lg font-bold text-rose-700">{brand.failed}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Error Analysis Section */}
       <div id="errors" className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 scroll-mt-28">
         {/* Top Errors List */}
@@ -492,69 +555,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      {/* Card Brands Analysis */}
-      <div id="brands" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="p-3 bg-purple-100 rounded-xl text-purple-600">
-            <CreditCard size={24} />
-          </div>
-          <div>
-            <h3 className="font-bold text-slate-900 text-xl">Performance por Bandeira</h3>
-            <p className="text-sm text-slate-500 mt-1">Comparativo de aprovação entre processadoras</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          {brand_data.map((brand: any, index: number) => (
-            <div key={index} className="flex flex-col p-6 bg-slate-50 rounded-xl border border-slate-100">
-              <div className="flex justify-between items-center mb-6">
-                <div className="flex items-center gap-3">
-                  {/* Brand Logo Placeholder */}
-                  <div className="w-10 h-6 bg-slate-200 rounded flex items-center justify-center text-[10px] font-bold text-slate-500 uppercase">
-                    {brand.brand.substring(0, 3)}
-                  </div>
-                  <span className="text-xl font-bold text-slate-800 capitalize">{brand.brand}</span>
-                </div>
-                <div className="text-right">
-                  <span className="block text-xs text-slate-500 uppercase font-bold mb-1">Taxa de Aprovação</span>
-                  <span className={cn(
-                    "text-3xl font-bold tracking-tight",
-                    brand.approval_rate > 50 ? "text-emerald-600" : "text-rose-600"
-                  )}>
-                    {brand.approval_rate}%
-                  </span>
-                </div>
-              </div>
-              
-              <div className="w-full bg-slate-200 h-4 rounded-full mb-6 overflow-hidden">
-                <div 
-                  className={cn(
-                    "h-full rounded-full transition-all duration-1000",
-                    brand.approval_rate > 50 ? "bg-emerald-500" : "bg-rose-500"
-                  )}
-                  style={{ width: `${brand.approval_rate}%` }}
-                ></div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="bg-white p-3 rounded-lg border border-slate-100 shadow-sm">
-                  <span className="block text-xs text-slate-400 uppercase font-bold mb-1">Total</span>
-                  <span className="block text-lg font-bold text-slate-800">{brand.total}</span>
-                </div>
-                <div className="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">
-                  <span className="block text-xs text-emerald-600 uppercase font-bold mb-1">Aprovados</span>
-                  <span className="block text-lg font-bold text-emerald-700">{brand.success}</span>
-                </div>
-                <div className="bg-rose-50/50 p-3 rounded-lg border border-rose-100">
-                  <span className="block text-xs text-rose-600 uppercase font-bold mb-1">Falhas</span>
-                  <span className="block text-lg font-bold text-rose-700">{brand.failed}</span>
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </DashboardLayout>
