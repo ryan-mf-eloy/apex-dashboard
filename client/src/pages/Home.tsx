@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import { 
   CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
-  CheckCircle2, XCircle, ListFilter, Grid, Wallet
+  CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
@@ -78,57 +78,91 @@ export default function Home() {
         </div>
       </div>
 
-      {/* KPI Grid - Simplified to 3 Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-        {/* Total de Transações */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Total de Transações</h3>
-            <div className="text-slate-400 bg-slate-50 p-2 rounded-lg"><ListFilter size={20} /></div>
+      {/* KPI Section - Unified Block with Segregation */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm mb-12 overflow-hidden">
+        <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+              <ListFilter size={20} />
+            </div>
+            <h3 className="font-bold text-slate-800 text-lg">Visão Geral de Transações</h3>
           </div>
-          
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-bold text-slate-900 tracking-tight">
-              {kpis.total_transactions}
-            </span>
-          </div>
-          <div className="mt-2 text-sm text-slate-500">Volume total processado</div>
         </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+          {/* Authorization (Sem Captura) */}
+          <div className="p-8 hover:bg-slate-50/30 transition-colors">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-8 bg-blue-500 rounded-full"></span>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-xl">Sem Captura</h4>
+                  <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization Only</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="block text-3xl font-bold text-slate-900">{kpis.authorization.total}</span>
+                <span className="text-sm text-slate-500">Total</span>
+              </div>
+            </div>
 
-        {/* Quantidade Aprovada */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-l-emerald-500">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Transações Aprovadas</h3>
-            <div className="text-emerald-600 bg-emerald-50 p-2 rounded-lg"><CheckCircle2 size={20} /></div>
-          </div>
-          
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-bold text-emerald-600 tracking-tight">
-              {kpis.success_count}
-            </span>
-            <span className="text-lg font-medium text-emerald-600/80 ml-1">
-              ({kpis.approval_rate}%)
-            </span>
-          </div>
-          <div className="mt-2 text-sm text-slate-500">Sucesso na autorização</div>
-        </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                <div className="flex items-center gap-2 mb-2 text-emerald-700">
+                  <CheckCircle2 size={16} />
+                  <span className="text-xs font-bold uppercase">Aprovadas</span>
+                </div>
+                <span className="block text-2xl font-bold text-emerald-700">{kpis.authorization.success}</span>
+                <span className="text-sm font-medium text-emerald-600/80">{kpis.authorization.rate}%</span>
+              </div>
 
-        {/* Quantidade Reprovada */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-300 border-l-4 border-l-rose-500">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Transações Reprovadas</h3>
-            <div className="text-rose-600 bg-rose-50 p-2 rounded-lg"><XCircle size={20} /></div>
+              <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
+                <div className="flex items-center gap-2 mb-2 text-rose-700">
+                  <XCircle size={16} />
+                  <span className="text-xs font-bold uppercase">Reprovadas</span>
+                </div>
+                <span className="block text-2xl font-bold text-rose-700">{kpis.authorization.failed}</span>
+                <span className="text-sm font-medium text-rose-600/80">{(100 - kpis.authorization.rate).toFixed(2)}%</span>
+              </div>
+            </div>
           </div>
-          
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl font-bold text-rose-600 tracking-tight">
-              {kpis.failed_count}
-            </span>
-            <span className="text-lg font-medium text-rose-600/80 ml-1">
-              ({(100 - kpis.approval_rate).toFixed(2)}%)
-            </span>
+
+          {/* Capture (Com Captura) */}
+          <div className="p-8 hover:bg-slate-50/30 transition-colors">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-8 bg-indigo-500 rounded-full"></span>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-xl">Com Captura</h4>
+                  <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization + Capture</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <span className="block text-3xl font-bold text-slate-900">{kpis.capture.total}</span>
+                <span className="text-sm text-slate-500">Total</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                <div className="flex items-center gap-2 mb-2 text-emerald-700">
+                  <CheckCircle2 size={16} />
+                  <span className="text-xs font-bold uppercase">Aprovadas</span>
+                </div>
+                <span className="block text-2xl font-bold text-emerald-700">{kpis.capture.success}</span>
+                <span className="text-sm font-medium text-emerald-600/80">{kpis.capture.rate}%</span>
+              </div>
+
+              <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
+                <div className="flex items-center gap-2 mb-2 text-rose-700">
+                  <XCircle size={16} />
+                  <span className="text-xs font-bold uppercase">Reprovadas</span>
+                </div>
+                <span className="block text-2xl font-bold text-rose-700">{kpis.capture.failed}</span>
+                <span className="text-sm font-medium text-rose-600/80">{(100 - kpis.capture.rate).toFixed(2)}%</span>
+              </div>
+            </div>
           </div>
-          <div className="mt-2 text-sm text-slate-500">Falhas e recusas</div>
         </div>
       </div>
 
@@ -295,7 +329,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Card Type Analysis (New) */}
+      {/* Card Type Analysis */}
       <div id="card-types" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
         <div className="flex items-center gap-4 mb-8">
           <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600">

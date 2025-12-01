@@ -8,6 +8,20 @@
     "approval_goal_min": 75,
     "approval_goal_max": 85,
     "approval_gap": 14.61,
+    "capture": {
+      "total": 524,
+      "success": 524,
+      "failed": 0,
+      "rate": 100.0,
+      "amount": 480436.0
+    },
+    "authorization": {
+      "total": 1274,
+      "success": 553,
+      "failed": 721,
+      "rate": 43.41,
+      "amount": 0.0
+    },
     "total_approved": 477056.0,
     "total_lost": 916.0,
     "avg_ticket_approved": 433.29,
