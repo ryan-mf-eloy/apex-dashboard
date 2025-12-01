@@ -25,6 +25,8 @@ export default function Home() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showAllErrors, setShowAllErrors] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetch("/data.json")
@@ -508,7 +510,7 @@ export default function Home() {
           <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
             <ListFilter size={20} />
           </div>
-          <h3 className="font-bold text-slate-800 text-xl">Últimas Transações</h3>
+          <h3 className="font-bold text-slate-800 text-xl">Histórico de Transações</h3>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -517,19 +519,21 @@ export default function Home() {
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-100">
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Data</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Merchant Order ID</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Status</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Valor</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Cartão</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Detalhes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {data.transactions?.map((txn: any, index: number) => {
+                {data.transactions?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((txn: any, index: number) => {
                   const isSuccess = txn.status === 'authorized' || txn.status === 'captured';
                   return (
                     <tr key={index} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-6 py-4 text-slate-600 font-medium whitespace-nowrap">
                         {txn.date ? format(parseISO(txn.date), "dd/MM/yyyy HH:mm") : "-"}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 font-mono text-xs">
+                        {txn.merchant_order_id || "-"}
                       </td>
                       <td className="px-6 py-4">
                         <span className={cn(
@@ -544,33 +548,41 @@ export default function Home() {
                       <td className="px-6 py-4 font-bold text-slate-900">
                         R$ {txn.amount?.toFixed(2)}
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="capitalize text-slate-700 font-medium">{txn.brand || "N/A"}</span>
-                          <span className="text-slate-400 text-xs uppercase">({txn.type || "N/A"})</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {isSuccess ? (
-                          <span className="text-slate-400 text-xs italic">Transação autorizada com sucesso</span>
-                        ) : (
-                          <div className="flex flex-col">
-                            <span className="text-rose-600 font-bold text-xs">{txn.reason_code}</span>
-                            <span className="text-slate-500 text-xs truncate max-w-[200px]" title={txn.reason_details}>
-                              {txn.reason_details}
-                            </span>
-                          </div>
-                        )}
-                      </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
           </div>
+          
+          {/* Pagination */}
+          {data.transactions && data.transactions.length > 0 && (
+            <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50">
+              <span className="text-sm text-slate-500">
+                Mostrando <span className="font-bold">{(currentPage - 1) * itemsPerPage + 1}</span> a <span className="font-bold">{Math.min(currentPage * itemsPerPage, data.transactions.length)}</span> de <span className="font-bold">{data.transactions.length}</span> transações
+              </span>
+              <div className="flex gap-2">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 rounded border border-slate-200 bg-white text-slate-600 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                >
+                  Anterior
+                </button>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(data.transactions.length / itemsPerPage), p + 1))}
+                  disabled={currentPage >= Math.ceil(data.transactions.length / itemsPerPage)}
+                  className="px-3 py-1 rounded border border-slate-200 bg-white text-slate-600 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                >
+                  Próxima
+                </button>
+              </div>
+            </div>
+          )}
+
           {(!data.transactions || data.transactions.length === 0) && (
             <div className="p-8 text-center text-slate-500">
-              Nenhuma transação recente encontrada.
+              Nenhuma transação encontrada.
             </div>
           )}
         </div>
