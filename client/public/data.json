@@ -35,162 +35,126 @@
       "total": 85,
       "success": 42,
       "failed": 43,
-      "approval_rate": 49.41,
-      "value_success": 0.0,
-      "value_failed": 0.0
+      "approval_rate": 49.41
     },
     {
       "date": "2025-11-15",
       "total": 122,
       "success": 78,
       "failed": 44,
-      "approval_rate": 63.93,
-      "value_success": 36257.0,
-      "value_failed": 0.0
+      "approval_rate": 63.93
     },
     {
       "date": "2025-11-16",
       "total": 116,
       "success": 69,
       "failed": 47,
-      "approval_rate": 59.48,
-      "value_success": 35423.0,
-      "value_failed": 0.0
+      "approval_rate": 59.48
     },
     {
       "date": "2025-11-17",
       "total": 100,
       "success": 67,
       "failed": 33,
-      "approval_rate": 67.0,
-      "value_success": 26381.0,
-      "value_failed": 0.0
+      "approval_rate": 67.0
     },
     {
       "date": "2025-11-18",
       "total": 84,
       "success": 50,
       "failed": 34,
-      "approval_rate": 59.52,
-      "value_success": 24815.0,
-      "value_failed": 0.0
+      "approval_rate": 59.52
     },
     {
       "date": "2025-11-19",
       "total": 136,
       "success": 66,
       "failed": 70,
-      "approval_rate": 48.53,
-      "value_success": 17257.0,
-      "value_failed": 0.0
+      "approval_rate": 48.53
     },
     {
       "date": "2025-11-20",
       "total": 197,
       "success": 107,
       "failed": 90,
-      "approval_rate": 54.31,
-      "value_success": 42666.0,
-      "value_failed": 0.0
+      "approval_rate": 54.31
     },
     {
       "date": "2025-11-21",
       "total": 152,
       "success": 104,
       "failed": 48,
-      "approval_rate": 68.42,
-      "value_success": 55948.0,
-      "value_failed": 0.0
+      "approval_rate": 68.42
     },
     {
       "date": "2025-11-22",
       "total": 103,
       "success": 69,
       "failed": 34,
-      "approval_rate": 66.99,
-      "value_success": 38555.0,
-      "value_failed": 0.0
+      "approval_rate": 66.99
     },
     {
       "date": "2025-11-23",
       "total": 77,
       "success": 43,
       "failed": 34,
-      "approval_rate": 55.84,
-      "value_success": 23840.0,
-      "value_failed": 0.0
+      "approval_rate": 55.84
     },
     {
       "date": "2025-11-24",
       "total": 92,
       "success": 52,
       "failed": 40,
-      "approval_rate": 56.52,
-      "value_success": 18391.0,
-      "value_failed": 0.0
+      "approval_rate": 56.52
     },
     {
       "date": "2025-11-25",
       "total": 101,
       "success": 67,
       "failed": 34,
-      "approval_rate": 66.34,
-      "value_success": 20707.0,
-      "value_failed": 0.0
+      "approval_rate": 66.34
     },
     {
       "date": "2025-11-26",
       "total": 114,
       "success": 75,
       "failed": 39,
-      "approval_rate": 65.79,
-      "value_success": 29782.0,
-      "value_failed": 0.0
+      "approval_rate": 65.79
     },
     {
       "date": "2025-11-27",
       "total": 87,
       "success": 57,
       "failed": 30,
-      "approval_rate": 65.52,
-      "value_success": 35839.0,
-      "value_failed": 0.0
+      "approval_rate": 65.52
     },
     {
       "date": "2025-11-28",
       "total": 102,
       "success": 55,
       "failed": 47,
-      "approval_rate": 53.92,
-      "value_success": 19189.0,
-      "value_failed": 916.0
+      "approval_rate": 53.92
     },
     {
       "date": "2025-11-29",
       "total": 81,
       "success": 50,
       "failed": 31,
-      "approval_rate": 61.73,
-      "value_success": 28222.0,
-      "value_failed": 0.0
+      "approval_rate": 61.73
     },
     {
       "date": "2025-11-30",
       "total": 47,
       "success": 35,
       "failed": 12,
-      "approval_rate": 74.47,
-      "value_success": 16623.0,
-      "value_failed": 0.0
+      "approval_rate": 74.47
     },
     {
       "date": "2025-12-01",
       "total": 27,
       "success": 15,
       "failed": 12,
-      "approval_rate": 55.56,
-      "value_success": 7161.0,
-      "value_failed": 0.0
+      "approval_rate": 55.56
     }
   ],
   "brand_data": [
@@ -199,18 +163,14 @@
       "total": 701,
       "success": 284,
       "failed": 417,
-      "approval_rate": 40.51,
-      "value_success": 0.0,
-      "value_failed": 0.0
+      "approval_rate": 40.51
     },
     {
       "brand": "visa",
       "total": 576,
       "success": 272,
       "failed": 304,
-      "approval_rate": 47.22,
-      "value_success": 1200.0,
-      "value_failed": 0.0
+      "approval_rate": 47.22
     }
   ],
   "error_data": [
@@ -218,240 +178,40 @@
       "code": "ABECS-51",
       "details": "Credit function unavailable (multiple card). NO RETRY",
       "count": 154,
-      "value_lost": 0.0,
       "percentage": 21.33
     },
     {
       "code": "ABECS-83",
       "details": "Mastercard suspected fraud",
       "count": 137,
-      "value_lost": 0.0,
       "percentage": 18.98
     },
     {
       "code": "ABECS-59",
       "details": "SUSPECTED FRAUD/TRAVEL WARNING",
       "count": 62,
-      "value_lost": 0.0,
       "percentage": 8.59
     },
     {
       "code": "ABECS-51",
       "details": "INSUFFICIENT BALANCE/LIMIT",
       "count": 56,
-      "value_lost": 0.0,
       "percentage": 7.76
     },
     {
       "code": "ABECS-82",
       "details": "Mastercard transaction not authorized. Contact issuer",
       "count": 49,
-      "value_lost": 0.0,
       "percentage": 6.79
-    },
-    {
-      "code": "ABECS-57",
-      "details": "TRANSACTION NOT ALLOWED FOR CARD",
-      "count": 45,
-      "value_lost": 0.0,
-      "percentage": 6.23
-    },
-    {
-      "code": "ABECS-57",
-      "details": "TRANSACTION NOT ALLOWED FOR CARD | TEMPORARY BLOCK (E.G. DELINQUENCY) | NEW CARD WITHOUT UNBLOCKING (INCLUDES CARD BLOCKED BY CUSTOMER IN APP - E-COM NFC)",
-      "count": 33,
-      "value_lost": 0.0,
-      "percentage": 4.57
-    },
-    {
-      "code": "GEN-002",
-      "details": "createPayment failed",
-      "count": 32,
-      "value_lost": 0.0,
-      "percentage": 4.43
-    },
-    {
-      "code": "AQS-005",
-      "details": "An error occurred communicating with the transaction provider, for more information please contact support.",
-      "count": 32,
-      "value_lost": 0.0,
-      "percentage": 4.43
-    },
-    {
-      "code": "ABECS-54",
-      "details": "EXPIRED CARD | INVALID EXPIRATION DATE",
-      "count": 23,
-      "value_lost": 0.0,
-      "percentage": 3.19
-    },
-    {
-      "code": "ABECS-N7",
-      "details": "SECURITY VIOLATION (INVALID OR NOT PRESENT) | DYNAMIC KEY CHANGE ERROR",
-      "count": 19,
-      "value_lost": 0.0,
-      "percentage": 2.63
-    },
-    {
-      "code": "ABECS-79",
-      "details": "Mastercard transaction not allowed for the card. Life cycle expired",
-      "count": 18,
-      "value_lost": 0.0,
-      "percentage": 2.49
-    },
-    {
-      "code": "ABECS-14",
-      "details": "CARD NUMBER DOES NOT BELONG TO ISSUER | INVALID CARD NUMBER",
-      "count": 10,
-      "value_lost": 0.0,
-      "percentage": 1.39
-    },
-    {
-      "code": "ABECS-63",
-      "details": "SECURITY VIOLATION (INVALID OR NOT PRESENT) | SUSPECTED FRAUD/TRAVEL WARNING",
-      "count": 10,
-      "value_lost": 0.0,
-      "percentage": 1.39
-    },
-    {
-      "code": "ABECS-39",
-      "details": "INCORRECT FUNCTION (CREDIT)",
-      "count": 10,
-      "value_lost": 0.0,
-      "percentage": 1.39
-    },
-    {
-      "code": "ABECS-62",
-      "details": "TEMPORARY BLOCK (E.G. DELINQUENCY) | DOMESTIC CARD - INTERNATIONAL TRANSACTION",
-      "count": 8,
-      "value_lost": 0.0,
-      "percentage": 1.11
-    },
-    {
-      "code": "ABECS-61",
-      "details": "EXCESS AMOUNT/WITHDRAWAL",
-      "count": 6,
-      "value_lost": 0.0,
-      "percentage": 0.83
-    },
-    {
-      "code": "ABECS-78",
-      "details": "NEW CARD WITHOUT UNBLOCKING (INCLUDES CARD BLOCKED BY CUSTOMER IN APP - E-COM NFC) - new cardholder not activated or card temporarily blocked",
-      "count": 5,
-      "value_lost": 0.0,
-      "percentage": 0.69
-    },
-    {
-      "code": "ABECS-46",
-      "details": "CLOSED ACCOUNT",
-      "count": 4,
-      "value_lost": 0.0,
-      "percentage": 0.55
-    },
-    {
-      "code": "ABECS-15",
-      "details": "ISSUER NOT FOUND - INCORRECT BIN (acquirer denial)",
-      "count": 3,
-      "value_lost": 0.0,
-      "percentage": 0.42
-    },
-    {
-      "code": "ABECS-GD",
-      "details": "Transaction not allowed.",
-      "count": 3,
-      "value_lost": 0.0,
-      "percentage": 0.42
-    },
-    {
-      "code": "ABECS-475",
-      "details": "Cancellation Timeout",
-      "count": 1,
-      "value_lost": 916.0,
-      "percentage": 0.14
-    },
-    {
-      "code": "ABECS-58",
-      "details": "TRANSACTION NOT ALLOWED TERMINAL CAPABILITY",
-      "count": 1,
-      "value_lost": 0.0,
-      "percentage": 0.14
-    },
-    {
-      "code": "AQS-025",
-      "details": "Authorization failed - SCA is required",
-      "count": 1,
-      "value_lost": 0.0,
-      "percentage": 0.14
     }
   ],
-  "error_categories": [
-    {
-      "key": "insufficient_balance",
-      "name": "Saldo/Limite Insuficiente",
-      "codes": [
-        "ABECS-51"
-      ],
-      "count": 210,
-      "percentage": 29.09,
-      "recommendation": "Implementar ZeroAuth para valida\u00e7\u00e3o pr\u00e9via de cart\u00e3o"
-    },
-    {
-      "key": "fraud",
-      "name": "Suspeita de Fraude",
-      "codes": [
-        "ABECS-83",
-        "ABECS-59"
-      ],
-      "count": 199,
-      "percentage": 27.56,
-      "recommendation": "Implementar 3D Secure e revisar regras antifraude"
-    },
-    {
-      "key": "card_restrictions",
-      "name": "Restri\u00e7\u00f5es do Cart\u00e3o",
-      "codes": [
-        "ABECS-57",
-        "ABECS-82",
-        "ABECS-79",
-        "ABECS-62"
-      ],
-      "count": 153,
-      "percentage": 21.19,
-      "recommendation": "Validar cart\u00e3o antes do checkout com ZeroAuth"
-    },
-    {
-      "key": "technical_errors",
-      "name": "Erros T\u00e9cnicos",
-      "codes": [
-        "GEN-002",
-        "AQS-005"
-      ],
-      "count": 64,
-      "percentage": 8.86,
-      "recommendation": "Implementar retry autom\u00e1tico e monitoramento"
-    },
-    {
-      "key": "card_validity",
-      "name": "Validade do Cart\u00e3o",
-      "codes": [
-        "ABECS-54",
-        "ABECS-78",
-        "ABECS-14"
-      ],
-      "count": 38,
-      "percentage": 5.26,
-      "recommendation": "Implementar valida\u00e7\u00e3o de dados antes da transa\u00e7\u00e3o"
-    },
-    {
-      "key": "security_issues",
-      "name": "Problemas de Seguran\u00e7a",
-      "codes": [
-        "ABECS-N7",
-        "ABECS-63"
-      ],
-      "count": 29,
-      "percentage": 4.02,
-      "recommendation": "Melhorar valida\u00e7\u00e3o de CVV no frontend"
-    }
+  "heatmap_columns": [
+    "ABECS-51",
+    "ABECS-83",
+    "ABECS-59",
+    "ABECS-82",
+    "ABECS-57",
+    "GEN-002"
   ],
   "heatmap_data": [
     {
@@ -473,14 +233,6 @@
       "GEN-002": 0
     }
   ],
-  "heatmap_columns": [
-    "ABECS-51",
-    "ABECS-83",
-    "ABECS-59",
-    "ABECS-82",
-    "ABECS-57",
-    "GEN-002"
-  ],
   "card_type_data": [
     {
       "type": "multiple",
@@ -488,21 +240,15 @@
       "success": 344,
       "failed": 492,
       "approval_rate": 41.15,
-      "value_success": 800.0,
-      "value_failed": 0.0,
       "brands": [
         {
           "brand": "mastercard",
           "total": 481,
-          "success": 188,
-          "failed": 293,
           "rate": 39.09
         },
         {
           "brand": "visa",
           "total": 355,
-          "success": 156,
-          "failed": 199,
           "rate": 43.94
         }
       ]
@@ -513,21 +259,15 @@
       "success": 212,
       "failed": 210,
       "approval_rate": 50.24,
-      "value_success": 400.0,
-      "value_failed": 0.0,
       "brands": [
         {
           "brand": "mastercard",
           "total": 211,
-          "success": 96,
-          "failed": 115,
           "rate": 45.5
         },
         {
           "brand": "visa",
           "total": 211,
-          "success": 116,
-          "failed": 95,
           "rate": 54.98
         }
       ]
@@ -538,21 +278,15 @@
       "success": 0,
       "failed": 19,
       "approval_rate": 0.0,
-      "value_success": 0.0,
-      "value_failed": 0.0,
       "brands": [
         {
           "brand": "visa",
           "total": 10,
-          "success": 0,
-          "failed": 10,
           "rate": 0.0
         },
         {
           "brand": "mastercard",
           "total": 9,
-          "success": 0,
-          "failed": 9,
           "rate": 0.0
         }
       ]
