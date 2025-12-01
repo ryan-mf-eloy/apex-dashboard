@@ -10,15 +10,8 @@
     "approval_gap": 14.61,
     "total_approved": 477056.0,
     "total_lost": 916.0,
-    "refund_count": 0,
-    "refund_amount": 0,
-    "refund_rate": 0.0,
     "avg_ticket_approved": 433.29,
     "avg_ticket_failed": 1.27,
-    "auth_success_count": 1101,
-    "auth_success_amount": 477056.0,
-    "capture_success_count": 1101,
-    "capture_success_amount": 477056.0,
     "period_start": "2025-11-14",
     "period_end": "2025-12-01"
   },
@@ -382,5 +375,35 @@
       "percentage": 4.02,
       "recommendation": "Melhorar validação de CVV no frontend"
     }
+  ],
+  "heatmap_data": [
+    {
+      "brand": "visa",
+      "ABECS-51": 79,
+      "ABECS-83": 0,
+      "ABECS-59": 62,
+      "ABECS-82": 0,
+      "ABECS-57": 45,
+      "GEN-002": 32
+    },
+    {
+      "brand": "mastercard",
+      "ABECS-51": 131,
+      "ABECS-83": 137,
+      "ABECS-59": 0,
+      "ABECS-82": 49,
+      "ABECS-57": 33,
+      "GEN-002": 0
+    }
+  ],
+  "heatmap_columns": [
+    "ABECS-51",
+    "ABECS-83",
+    "ABECS-59",
+    "ABECS-51",
+    "ABECS-82",
+    "ABECS-57",
+    "ABECS-57",
+    "GEN-002"
   ]
 }

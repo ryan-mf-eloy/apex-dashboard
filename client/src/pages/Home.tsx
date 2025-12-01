@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import { 
   CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
-  CheckCircle2, XCircle, ListFilter
+  CheckCircle2, XCircle, ListFilter, Grid
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
@@ -50,7 +50,21 @@ export default function Home() {
 
   if (!data) return <div>Erro ao carregar dados.</div>;
 
-  const { kpis, daily_data, brand_data, error_categories, error_data } = data;
+  const { kpis, daily_data, brand_data, error_categories, error_data, heatmap_data, heatmap_columns } = data;
+
+  // Função para determinar a cor da célula do heatmap baseada no valor
+  const getHeatmapColor = (value: number) => {
+    if (value === 0) return '#FFFBEB'; // Amarelo muito claro
+    if (value < 20) return '#FDE68A'; // Amarelo claro
+    if (value < 50) return '#FCD34D'; // Amarelo médio
+    if (value < 80) return '#FB923C'; // Laranja
+    if (value < 100) return '#EF4444'; // Vermelho claro
+    return '#991B1B'; // Vermelho escuro
+  };
+
+  const getHeatmapTextColor = (value: number) => {
+    return value > 80 ? 'white' : '#1E293B';
+  };
 
   return (
     <DashboardLayout>
@@ -206,6 +220,81 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Error Heatmap Section (New) */}
+      <div id="heatmap" className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm mb-12 scroll-mt-28">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-3 bg-orange-100 rounded-xl text-orange-600">
+            <Grid size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-900 text-xl">Distribuição de Erros por Bandeira</h3>
+            <p className="text-sm text-slate-500 mt-1">Mapa de calor identificando concentração de falhas</p>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <div className="min-w-[800px]">
+            {/* Header Row */}
+            <div className="grid grid-cols-[150px_repeat(8,1fr)] gap-1 mb-1">
+              <div className="font-bold text-slate-500 text-sm flex items-end pb-2">Bandeira</div>
+              {heatmap_columns.map((col: string) => (
+                <div key={col} className="font-bold text-slate-500 text-xs text-center pb-2 rotate-0">
+                  {col}
+                </div>
+              ))}
+            </div>
+
+            {/* Data Rows */}
+            {heatmap_data.map((row: any) => (
+              <div key={row.brand} className="grid grid-cols-[150px_repeat(8,1fr)] gap-1 mb-1">
+                <div className="font-bold text-slate-800 text-sm flex items-center uppercase">
+                  {row.brand}
+                </div>
+                {heatmap_columns.map((col: string) => {
+                  const value = row[col] || 0;
+                  return (
+                    <div 
+                      key={`${row.brand}-${col}`}
+                      className="h-16 flex items-center justify-center rounded font-bold text-sm transition-all hover:scale-105 cursor-default"
+                      style={{ 
+                        backgroundColor: getHeatmapColor(value),
+                        color: getHeatmapTextColor(value)
+                      }}
+                      title={`${row.brand} - ${col}: ${value} ocorrências`}
+                    >
+                      {value}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+            
+            {/* Legend */}
+            <div className="flex justify-end items-center gap-4 mt-6 text-xs text-slate-500">
+              <span>Escala de Ocorrências:</span>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#FFFBEB]"></span> 0
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#FDE68A]"></span> &lt; 20
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#FCD34D]"></span> &lt; 50
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#FB923C]"></span> &lt; 80
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#EF4444]"></span> &lt; 100
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-4 h-4 rounded bg-[#991B1B]"></span> 100+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Error Analysis Section */}
       <div id="errors" className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 scroll-mt-28">
         {/* Top Errors List */}
@@ -250,7 +339,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Error Categories & Recommendations */}
+        {/* Error Categories */}
         <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex items-center gap-4 mb-8">
             <div className="p-3 bg-blue-100 rounded-xl text-blue-600">
@@ -258,7 +347,7 @@ export default function Home() {
             </div>
             <div>
               <h3 className="font-bold text-slate-900 text-xl">Diagnóstico por Categoria</h3>
-              <p className="text-sm text-slate-500 mt-1">Agrupamento de impacto e soluções sugeridas</p>
+              <p className="text-sm text-slate-500 mt-1">Agrupamento de impacto</p>
             </div>
           </div>
 
@@ -285,16 +374,6 @@ export default function Home() {
                     ></div>
                   </div>
                   <span className="text-sm font-bold text-slate-600 w-12 text-right">{cat.percentage}%</span>
-                </div>
-
-                <div className="flex gap-3 items-start">
-                  <Info size={18} className="text-blue-600 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <span className="text-xs font-bold text-blue-700 uppercase tracking-wide block mb-1">Ação Recomendada</span>
-                    <p className="text-sm text-slate-600 leading-relaxed">
-                      {cat.recommendation}
-                    </p>
-                  </div>
                 </div>
               </div>
             ))}
@@ -362,57 +441,6 @@ export default function Home() {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* Action Plan Footer */}
-      <div id="recommendations" className="bg-slate-900 text-white p-10 rounded-3xl shadow-xl scroll-mt-28 relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-overlay filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 rounded-full mix-blend-overlay filter blur-3xl opacity-20 translate-y-1/2 -translate-x-1/2"></div>
-
-        <div className="relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-10 border-b border-white/10 pb-8">
-            <div>
-              <div className="flex items-center gap-3 mb-3">
-                <TrendingUp className="text-emerald-400" size={24} />
-                <h3 className="text-2xl font-bold">Plano de Recuperação de Receita</h3>
-              </div>
-              <p className="text-slate-400 max-w-2xl text-lg">
-                Ações estratégicas para reverter o cenário de falhas e otimizar a conversão.
-              </p>
-            </div>
-            <div className="bg-white/10 px-6 py-4 rounded-2xl backdrop-blur-md border border-white/10 shadow-lg">
-              <span className="text-sm font-medium text-slate-300 uppercase tracking-wider block mb-1">Potencial Mensal</span>
-              <span className="block text-3xl font-bold text-emerald-400">R$ 150.000+</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1">
-              <div className="w-10 h-10 bg-rose-500 rounded-xl flex items-center justify-center font-bold text-lg mb-5 shadow-lg shadow-rose-500/20">1</div>
-              <h4 className="font-bold text-xl mb-3">Ativar 3D Secure</h4>
-              <p className="text-slate-400 leading-relaxed">
-                Combata os 28% de falhas por suspeita de fraude transferindo a responsabilidade para o emissor com o protocolo 3DS 2.0.
-              </p>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1">
-              <div className="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center font-bold text-lg mb-5 shadow-lg shadow-orange-500/20">2</div>
-              <h4 className="font-bold text-xl mb-3">ZeroAuth Check</h4>
-              <p className="text-slate-400 leading-relaxed">
-                Valide cartões silenciosamente antes do checkout para eliminar erros de "Cartão Inválido" e melhorar a experiência do usuário.
-              </p>
-            </div>
-
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-300 hover:-translate-y-1">
-              <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center font-bold text-lg mb-5 shadow-lg shadow-blue-500/20">3</div>
-              <h4 className="font-bold text-xl mb-3">Ajuste Mastercard</h4>
-              <p className="text-slate-400 leading-relaxed">
-                A taxa da Mastercard está 7% abaixo da Visa. Uma revisão técnica de MCC e parâmetros antifraude é urgente.
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </DashboardLayout>
