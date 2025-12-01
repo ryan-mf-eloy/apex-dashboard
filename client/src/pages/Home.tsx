@@ -510,7 +510,7 @@ export default function Home() {
           <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
             <ListFilter size={20} />
           </div>
-          <h3 className="font-bold text-slate-800 text-xl">Histórico de Transações</h3>
+          <h3 className="font-bold text-slate-800 text-xl">Histórico Completo de Transações</h3>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
