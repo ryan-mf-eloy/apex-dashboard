@@ -407,7 +407,7 @@ export default function Home() {
                       return (
                         <td 
                           key={`${row.brand}-${col}`} 
-                          className="px-6 py-4 text-center font-bold transition-all duration-200 hover:scale-105 cursor-default"
+                          className="px-6 py-4 text-center font-bold cursor-default"
                           style={{ 
                             backgroundColor: getHeatmapColor(value),
                             color: getHeatmapTextColor(value)
@@ -443,62 +443,62 @@ export default function Home() {
 
       {/* Error Analysis */}
       <div id="errors" className="mb-12 scroll-mt-28">
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
-              <AlertCircle size={20} />
-            </div>
-            <h3 className="font-bold text-slate-800 text-xl">Principais Motivos de Recusa</h3>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+            <AlertCircle size={20} />
           </div>
-          
-          <button 
-            onClick={() => setShowAllErrors(!showAllErrors)}
-            className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors"
-          >
-            {showAllErrors ? (
-              <>
-                <ChevronUp size={16} />
-                Mostrar Menos
-              </>
-            ) : (
-              <>
-                <ChevronDown size={16} />
-                Ver Todos ({error_data?.length || 0})
-              </>
-            )}
-          </button>
+          <h3 className="font-bold text-slate-800 text-xl">Principais Motivos de Recusa</h3>
         </div>
 
-        <div className="space-y-4">
-          {displayedErrors?.map((error: any, index: number) => (
-            <div key={index} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all">
-              <div className="flex justify-between items-start mb-3">
-                <div className="flex-1 pr-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs font-mono font-bold border border-slate-200">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="divide-y divide-slate-100">
+            {displayedErrors?.map((error: any, index: number) => (
+              <div key={index} className="p-5 hover:bg-slate-50/50 transition-colors">
+                <div className="flex justify-between items-center mb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-mono font-bold border border-slate-200">
                       {error.code}
                     </span>
-                    <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-100">
+                    <h4 className="font-bold text-slate-800 text-sm md:text-base">
+                      {error.details}
+                    </h4>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded border border-rose-100">
                       {error.count} falhas
                     </span>
+                    <span className="text-sm font-bold text-slate-900 w-12 text-right">{error.percentage?.toFixed(1) || "0.0"}%</span>
                   </div>
-                  <h4 className="font-bold text-slate-800 text-sm md:text-base mt-1">
-                    {error.details}
-                  </h4>
                 </div>
-                <div className="text-right shrink-0">
-                  <span className="text-lg font-bold text-slate-900">{error.percentage?.toFixed(1) || "0.0"}%</span>
+                
+                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                  <div 
+                    className="bg-rose-500 h-1.5 rounded-full transition-all duration-500" 
+                    style={{ width: `${error.percentage || 0}%` }}
+                  ></div>
                 </div>
               </div>
-              
-              <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                <div 
-                  className="bg-rose-500 h-2.5 rounded-full transition-all duration-500" 
-                  style={{ width: `${error.percentage || 0}%` }}
-                ></div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          
+          <div className="bg-slate-50 border-t border-slate-100 p-2">
+            <button 
+              onClick={() => setShowAllErrors(!showAllErrors)}
+              className="w-full flex items-center justify-center gap-2 text-sm font-bold text-slate-600 hover:text-blue-600 hover:bg-blue-50/50 py-3 rounded-lg transition-all"
+            >
+              {showAllErrors ? (
+                <>
+                  <ChevronUp size={16} />
+                  Mostrar Menos
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  Ver Todos ({error_data?.length || 0})
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </DashboardLayout>
