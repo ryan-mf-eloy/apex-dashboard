@@ -526,7 +526,7 @@ export default function Home() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {data.transactions?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((txn: any, index: number) => {
-                  const isSuccess = txn.status === 'authorized' || txn.status === 'captured';
+                  const isSuccess = txn.status === 'authorized' || txn.status === 'captured' || txn.status === 'success';
                   return (
                     <tr key={index} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-6 py-4 text-slate-600 font-medium whitespace-nowrap">
