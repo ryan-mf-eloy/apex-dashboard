@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import { 
   CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
-  CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight
+  CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp
 } from "lucide-react";
 import { format, parseISO } from "date-fns";
 
@@ -23,6 +23,7 @@ const COLORS = {
 export default function Home() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showAllErrors, setShowAllErrors] = useState(false);
 
   useEffect(() => {
     fetch("/data.json")
@@ -65,6 +66,9 @@ export default function Home() {
   const getHeatmapTextColor = (value: number) => {
     return value > 80 ? 'white' : '#1E293B';
   };
+
+  // Determinar quantos erros mostrar
+  const displayedErrors = showAllErrors ? error_data : error_data.slice(0, 5);
 
   return (
     <DashboardLayout>
@@ -476,18 +480,36 @@ export default function Home() {
       <div id="errors" className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12 scroll-mt-28">
         {/* Top Errors List */}
         <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="p-3 bg-rose-100 rounded-xl text-rose-600">
-              <AlertCircle size={24} />
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-rose-100 rounded-xl text-rose-600">
+                <AlertCircle size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 text-xl">Motivos de Recusa</h3>
+                <p className="text-sm text-slate-500 mt-1">Detalhamento dos códigos de erro</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-bold text-slate-900 text-xl">Principais Motivos de Recusa</h3>
-              <p className="text-sm text-slate-500 mt-1">Detalhamento dos códigos de erro mais frequentes</p>
-            </div>
+            <button 
+              onClick={() => setShowAllErrors(!showAllErrors)}
+              className="flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg transition-colors"
+            >
+              {showAllErrors ? (
+                <>
+                  <ChevronUp size={16} />
+                  Recolher
+                </>
+              ) : (
+                <>
+                  <ChevronDown size={16} />
+                  Ver todos ({error_data.length})
+                </>
+              )}
+            </button>
           </div>
 
           <div className="space-y-5">
-            {error_data.slice(0, 5).map((error: any, index: number) => (
+            {displayedErrors.map((error: any, index: number) => (
               <div key={index} className="group">
                 <div className="flex justify-between mb-2">
                   <div className="flex items-center gap-3">
@@ -513,11 +535,22 @@ export default function Home() {
                 </div>
               </div>
             ))}
+            
+            {!showAllErrors && error_data.length > 5 && (
+              <div className="pt-4 text-center border-t border-slate-100">
+                <button 
+                  onClick={() => setShowAllErrors(true)}
+                  className="text-sm text-slate-500 hover:text-blue-600 font-medium transition-colors"
+                >
+                  + {error_data.length - 5} outros motivos de recusa
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Error Categories */}
-        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm h-fit">
           <div className="flex items-center gap-4 mb-8">
             <div className="p-3 bg-blue-100 rounded-xl text-blue-600">
               <ShieldAlert size={24} />

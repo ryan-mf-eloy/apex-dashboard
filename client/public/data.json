@@ -318,6 +318,69 @@
       "count": 10,
       "value_lost": 0.0,
       "percentage": 1.39
+    },
+    {
+      "code": "ABECS-62",
+      "details": "TEMPORARY BLOCK (E.G. DELINQUENCY) | DOMESTIC CARD - INTERNATIONAL TRANSACTION",
+      "count": 8,
+      "value_lost": 0.0,
+      "percentage": 1.11
+    },
+    {
+      "code": "ABECS-61",
+      "details": "EXCESS AMOUNT/WITHDRAWAL",
+      "count": 6,
+      "value_lost": 0.0,
+      "percentage": 0.83
+    },
+    {
+      "code": "ABECS-78",
+      "details": "NEW CARD WITHOUT UNBLOCKING (INCLUDES CARD BLOCKED BY CUSTOMER IN APP - E-COM NFC) - new cardholder not activated or card temporarily blocked",
+      "count": 5,
+      "value_lost": 0.0,
+      "percentage": 0.69
+    },
+    {
+      "code": "ABECS-46",
+      "details": "CLOSED ACCOUNT",
+      "count": 4,
+      "value_lost": 0.0,
+      "percentage": 0.55
+    },
+    {
+      "code": "ABECS-15",
+      "details": "ISSUER NOT FOUND - INCORRECT BIN (acquirer denial)",
+      "count": 3,
+      "value_lost": 0.0,
+      "percentage": 0.42
+    },
+    {
+      "code": "ABECS-GD",
+      "details": "Transaction not allowed.",
+      "count": 3,
+      "value_lost": 0.0,
+      "percentage": 0.42
+    },
+    {
+      "code": "ABECS-475",
+      "details": "Cancellation Timeout",
+      "count": 1,
+      "value_lost": 916.0,
+      "percentage": 0.14
+    },
+    {
+      "code": "ABECS-58",
+      "details": "TRANSACTION NOT ALLOWED TERMINAL CAPABILITY",
+      "count": 1,
+      "value_lost": 0.0,
+      "percentage": 0.14
+    },
+    {
+      "code": "AQS-025",
+      "details": "Authorization failed - SCA is required",
+      "count": 1,
+      "value_lost": 0.0,
+      "percentage": 0.14
     }
   ],
   "error_categories": [
