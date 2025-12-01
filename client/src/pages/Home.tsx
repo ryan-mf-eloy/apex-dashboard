@@ -531,7 +531,7 @@ export default function Home() {
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-100">
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Data</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">External ID</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Order ID</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Status</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Valor</th>
                 </tr>
@@ -545,7 +545,7 @@ export default function Home() {
                         {txn.date ? format(parseISO(txn.date), "dd/MM/yyyy HH:mm") : "-"}
                       </td>
                       <td className="px-6 py-4 text-slate-600 font-mono text-xs">
-                        {(txn.merchant_order_id && txn.merchant_order_id !== "nan") ? txn.merchant_order_id : "-"}
+                        {txn.order_id || "-"}
                       </td>
                       <td className="px-6 py-4">
                         <span className={cn(
