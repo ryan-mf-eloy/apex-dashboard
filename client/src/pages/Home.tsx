@@ -533,7 +533,8 @@ export default function Home() {
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Data</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Order ID</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Status</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Valor</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">External ID</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Categoria</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -551,14 +552,17 @@ export default function Home() {
                         <span className={cn(
                           "px-2 py-1 rounded text-xs font-bold border uppercase",
                           isSuccess 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-                            : "bg-rose-50 text-rose-700 border-rose-200"
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
+                            : "bg-rose-50 text-rose-700 border-rose-100"
                         )}>
                           {isSuccess ? "Aprovada" : "Recusada"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 font-bold text-slate-900">
-                        R$ {txn.amount?.toFixed(2)}
+                      <td className="px-6 py-4 text-slate-600 font-mono text-xs">
+                        {txn.external_id || "-"}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 text-xs uppercase">
+                        {txn.category || "-"}
                       </td>
                     </tr>
                   );
