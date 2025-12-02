@@ -362,7 +362,11 @@ export default function Home() {
                   BY BRAND
                 </div>
                 <div className="space-y-3">
-                  {type.brands?.map((brand: any) => (
+                  {type.brands?.sort((a: any, b: any) => {
+                    if (a.brand === 'mastercard') return -1;
+                    if (b.brand === 'mastercard') return 1;
+                    return 0;
+                  }).map((brand: any) => (
                     <div key={brand.brand} className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${brand.brand === 'visa' ? 'bg-blue-600' : 'bg-orange-500'}`}></div>
