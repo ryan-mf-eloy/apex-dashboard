@@ -394,47 +394,58 @@ export default function Home() {
       <div id="errors" className="mb-12 scroll-mt-28">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
-            <ShieldAlert size={20} />
+            <AlertCircle size={20} />
           </div>
-          <h3 className="font-bold text-slate-800 text-xl">Decline Reasons</h3>
+          <h3 className="font-bold text-slate-800 text-xl">Top Decline Reasons</h3>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="divide-y divide-slate-100">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+          <div className="space-y-8">
             {displayedErrors?.map((error: any, index: number) => (
-              <div key={index} className="p-6 hover:bg-slate-50/50 transition-colors flex items-center justify-between group">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 font-bold text-sm border border-rose-100 group-hover:scale-110 transition-transform">
-                    {index + 1}
+              <div key={index} className="relative">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
+                  <div className="flex items-start md:items-center gap-3">
+                    <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-bold font-mono border border-slate-200 whitespace-nowrap">
+                      {error.code}
+                    </span>
+                    <h4 className="font-bold text-slate-800 text-sm md:text-base uppercase tracking-tight">
+                      {error.details}
+                    </h4>
                   </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-lg">{error.details}</h4>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs font-mono border border-slate-200">
-                        Code: {error.code}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between md:justify-end gap-4 pl-12 md:pl-0">
+                    <span className="px-2 py-1 bg-rose-50 text-rose-600 rounded text-xs font-bold border border-rose-100 whitespace-nowrap">
+                      {error.count} failures
+                    </span>
+                    <span className="font-bold text-slate-900 text-sm w-12 text-right">
+                      {error.percentage?.toFixed(1)}%
+                    </span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="block text-2xl font-bold text-slate-900">{error.count}</span>
-                  <span className="text-sm font-medium text-slate-500">{error.percentage?.toFixed(1)}% of total</span>
+                
+                {/* Progress Bar */}
+                <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-rose-500 rounded-full"
+                    style={{ width: `${Math.min(error.percentage * 2, 100)}%` }} // Scale up for visibility
+                  ></div>
                 </div>
               </div>
             ))}
           </div>
           
           {error_data && error_data.length > 5 && (
-            <button 
-              onClick={() => setShowAllErrors(!showAllErrors)}
-              className="w-full py-4 bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-colors border-t border-slate-100 flex items-center justify-center gap-2"
-            >
-              {showAllErrors ? (
-                <>Show Less <ChevronUp size={16} /></>
-              ) : (
-                <>Show All Reasons ({error_data.length - 5} more) <ChevronDown size={16} /></>
-              )}
-            </button>
+            <div className="mt-8 pt-4 border-t border-slate-100 flex justify-center">
+              <button 
+                onClick={() => setShowAllErrors(!showAllErrors)}
+                className="px-6 py-2 bg-white border border-slate-200 rounded-full text-slate-600 font-medium text-sm hover:bg-slate-50 transition-colors flex items-center gap-2 shadow-sm"
+              >
+                {showAllErrors ? (
+                  <>Show Less <ChevronUp size={16} /></>
+                ) : (
+                  <>Show All Reasons ({error_data.length - 5} more) <ChevronDown size={16} /></>
+                )}
+              </button>
+            </div>
           )}
         </div>
       </div>
