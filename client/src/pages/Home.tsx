@@ -92,14 +92,27 @@ export default function Home() {
   // Determine if error is retryable based on ABECS standards
   // Reversible = Retry Allowed, Irreversible = No Retry
   const getRetryStatus = (code: string) => {
-    const reversibleCodes = ['ABECS-04', 'ABECS-05', 'ABECS-06', 'ABECS-38', 'ABECS-51', 'ABECS-55', 'ABECS-59', 'ABECS-61', 'ABECS-62', 'ABECS-65', 'ABECS-75', 'ABECS-78', 'ABECS-91', 'ABECS-96', 'ABECS-AB', 'ABECS-AC', 'ABECS-P6'];
+    // Based on Cielo ABECS documentation:
+    // Reversible: 51 (Insufficient Funds), 59 (Suspected Fraud), 91 (Issuer Down), 96 (System Failure)
+    // Irreversible: 57 (Not Permitted), 82 (Invalid Card), 83 (Expired/Invalid PIN)
     
-    // Check if code is in reversible list (allowing for partial matches if needed, but exact match is safer)
-    // Using includes for exact match against the list
-    const isReversible = reversibleCodes.some(c => code.includes(c.replace('ABECS-', '')));
+    const reversibleCodes = [
+      'ABECS-51', // SALDO/LIMITE INSUFICIENTE -> REVERSÍVEL
+      'ABECS-59', // SUSPEITA DE FRAUDE/AVISO DE VIAGEM -> REVERSÍVEL
+      'ABECS-91', // EMISSOR FORA DO AR -> REVERSÍVEL
+      'ABECS-96', // FALHA DO SISTEMA -> REVERSÍVEL
+      'ABECS-05', // GENÉRICA -> REVERSÍVEL
+      'ABECS-62', // BLOQUEIO TEMPORÁRIO -> REVERSÍVEL
+      'ABECS-78'  // CARTÃO NOVO SEM DESBLOQUEIO -> REVERSÍVEL
+    ];
     
-    // Specific overrides based on common knowledge if code format varies
-    if (code.includes('51') || code.includes('59') || code.includes('91')) return { allowed: true, label: 'Retry Allowed' };
+    // Explicitly Irreversible codes for clarity (though default is No Retry)
+    // ABECS-57: TRANSAÇÃO NÃO PERMITIDA -> IRREVERSÍVEL
+    // ABECS-82: CARTÃO INVÁLIDO -> IRREVERSÍVEL
+    // ABECS-83: SENHA VENCIDA / ERRO DE CRIPTOGRAFIA -> IRREVERSÍVEL
+    
+    // Check if code is in reversible list
+    const isReversible = reversibleCodes.some(c => code === c || code.endsWith(c.replace('ABECS-', '')));
     
     return isReversible 
       ? { allowed: true, label: 'Retry Allowed' } 
