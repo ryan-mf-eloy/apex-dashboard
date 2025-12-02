@@ -391,19 +391,169 @@
       "period": "Morning",
       "success": 134,
       "failed": 104,
-      "total": 238
+      "total": 238,
+      "hourly": [
+        {
+          "hour": 6,
+          "success": 7,
+          "failed": 4,
+          "total": 11
+        },
+        {
+          "hour": 7,
+          "success": 0,
+          "failed": 0,
+          "total": 0
+        },
+        {
+          "hour": 8,
+          "success": 8,
+          "failed": 9,
+          "total": 17
+        },
+        {
+          "hour": 9,
+          "success": 21,
+          "failed": 25,
+          "total": 46
+        },
+        {
+          "hour": 10,
+          "success": 44,
+          "failed": 30,
+          "total": 74
+        },
+        {
+          "hour": 11,
+          "success": 54,
+          "failed": 36,
+          "total": 90
+        }
+      ]
     },
     {
       "period": "Afternoon",
       "success": 493,
       "failed": 306,
-      "total": 799
+      "total": 799,
+      "hourly": [
+        {
+          "hour": 12,
+          "success": 77,
+          "failed": 31,
+          "total": 108
+        },
+        {
+          "hour": 13,
+          "success": 77,
+          "failed": 47,
+          "total": 124
+        },
+        {
+          "hour": 14,
+          "success": 101,
+          "failed": 62,
+          "total": 163
+        },
+        {
+          "hour": 15,
+          "success": 75,
+          "failed": 50,
+          "total": 125
+        },
+        {
+          "hour": 16,
+          "success": 90,
+          "failed": 52,
+          "total": 142
+        },
+        {
+          "hour": 17,
+          "success": 73,
+          "failed": 64,
+          "total": 137
+        }
+      ]
     },
     {
       "period": "Night",
       "success": 474,
       "failed": 312,
-      "total": 786
+      "total": 786,
+      "hourly": [
+        {
+          "hour": 0,
+          "success": 43,
+          "failed": 33,
+          "total": 76
+        },
+        {
+          "hour": 1,
+          "success": 37,
+          "failed": 9,
+          "total": 46
+        },
+        {
+          "hour": 2,
+          "success": 19,
+          "failed": 18,
+          "total": 37
+        },
+        {
+          "hour": 3,
+          "success": 14,
+          "failed": 18,
+          "total": 32
+        },
+        {
+          "hour": 4,
+          "success": 8,
+          "failed": 6,
+          "total": 14
+        },
+        {
+          "hour": 5,
+          "success": 3,
+          "failed": 4,
+          "total": 7
+        },
+        {
+          "hour": 18,
+          "success": 64,
+          "failed": 51,
+          "total": 115
+        },
+        {
+          "hour": 19,
+          "success": 61,
+          "failed": 37,
+          "total": 98
+        },
+        {
+          "hour": 20,
+          "success": 61,
+          "failed": 26,
+          "total": 87
+        },
+        {
+          "hour": 21,
+          "success": 64,
+          "failed": 46,
+          "total": 110
+        },
+        {
+          "hour": 22,
+          "success": 62,
+          "failed": 37,
+          "total": 99
+        },
+        {
+          "hour": 23,
+          "success": 38,
+          "failed": 27,
+          "total": 65
+        }
+      ]
     }
   ],
   "transactions": [

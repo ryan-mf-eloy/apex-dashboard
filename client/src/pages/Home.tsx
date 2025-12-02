@@ -7,7 +7,7 @@ import {
 import { 
   CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
   CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp,
-  Ban, Phone, AlertTriangle, HelpCircle
+  Ban, Phone, AlertTriangle, HelpCircle, ArrowLeft
 } from "lucide-react";
 import {
   Tooltip,
@@ -32,6 +32,7 @@ const COLORS = {
 export default function Home() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
   const [showAllErrors, setShowAllErrors] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 100;
@@ -422,8 +423,25 @@ export default function Home() {
         <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h3 className="font-bold text-slate-900 text-xl">Transaction Volume by Period</h3>
-              <p className="text-slate-500 text-sm mt-1">Morning (06-12h), Afternoon (12-18h), Night (18-06h)</p>
+              <div className="flex items-center gap-3">
+                {selectedPeriod && (
+                  <button 
+                    onClick={() => setSelectedPeriod(null)}
+                    className="p-1.5 rounded-full hover:bg-slate-100 text-slate-500 transition-colors"
+                    title="Back to periods"
+                  >
+                    <ArrowLeft size={20} />
+                  </button>
+                )}
+                <h3 className="font-bold text-slate-900 text-xl">
+                  {selectedPeriod ? `${selectedPeriod} Breakdown` : 'Transaction Volume by Period'}
+                </h3>
+              </div>
+              <p className="text-slate-500 text-sm mt-1">
+                {selectedPeriod 
+                  ? 'Hourly breakdown of approved vs declined transactions' 
+                  : 'Click on a bar to see hourly details (Morning, Afternoon, Night)'}
+              </p>
             </div>
             <div className="flex gap-6 text-sm font-medium">
               <div className="flex items-center gap-2">
@@ -439,25 +457,66 @@ export default function Home() {
           
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data?.period_data} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
-                <XAxis type="number" hide />
-                <YAxis 
-                  dataKey="period" 
-                  type="category" 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: '#64748B', fontSize: 14, fontWeight: 600 }}
-                  width={100}
-                />
-                <RechartsTooltip 
-                  cursor={{ fill: '#F8FAFC' }}
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                  formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
-                />
-                <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 4, 4, 0]} barSize={40} />
-                <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[0, 4, 4, 0]} barSize={40} />
-              </BarChart>
+              {selectedPeriod ? (
+                <BarChart 
+                  data={data?.period_data?.find((p: any) => p.period === selectedPeriod)?.hourly || []} 
+                  layout="horizontal" 
+                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+                  <XAxis 
+                    dataKey="hour" 
+                    tickFormatter={(val) => `${val}h`}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#64748B', fontSize: 12 }}
+                    dy={10}
+                  />
+                  <YAxis 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#64748B', fontSize: 12 }}
+                  />
+                  <RechartsTooltip 
+                    cursor={{ fill: '#F8FAFC' }}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                    formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
+                    labelFormatter={(label) => `${label}:00 - ${label}:59`}
+                  />
+                  <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 0, 4, 4]} barSize={32} />
+                  <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[4, 4, 0, 0]} barSize={32} />
+                </BarChart>
+              ) : (
+                <BarChart 
+                  data={data?.period_data} 
+                  layout="vertical" 
+                  margin={{ top: 0, right: 30, left: 20, bottom: 0 }}
+                  onClick={(state) => {
+                    if (state && state.activePayload && state.activePayload.length > 0) {
+                      setSelectedPeriod(state.activePayload[0].payload.period);
+                    }
+                  }}
+                  className="cursor-pointer"
+                >
+                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
+                  <XAxis type="number" hide />
+                  <YAxis 
+                    dataKey="period" 
+                    type="category" 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fill: '#64748B', fontSize: 14, fontWeight: 600 }}
+                    width={100}
+                  />
+                  <RechartsTooltip 
+                    cursor={{ fill: '#F8FAFC' }}
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                    formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
+                  />
+                  <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 4, 4, 0]} barSize={40} />
+                  <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[0, 4, 4, 0]} barSize={40} />
+                </BarChart>
+              )}
             </ResponsiveContainer>
           </div>
         </div>
