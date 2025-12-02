@@ -9,10 +9,10 @@ import {
   CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp
 } from "lucide-react";
 import { format, parseISO, differenceInDays, min, max } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
-// Cores do tema
+// Theme Colors
 const COLORS = {
   primary: "#0052CC",
   success: "#10B981",
@@ -37,7 +37,7 @@ export default function Home() {
         setLoading(false);
       })
       .catch(err => {
-        console.error("Erro ao carregar dados:", err);
+        console.error("Error loading data:", err);
         setLoading(false);
       });
   }, []);
@@ -47,7 +47,7 @@ export default function Home() {
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-          <p className="text-slate-500 font-medium">Loading presentation...</p>
+          <p className="text-slate-500 font-medium">Loading dashboard...</p>
         </div>
       </div>
     );
@@ -55,35 +55,42 @@ export default function Home() {
 
   if (!data) return <div>Error loading data.</div>;
 
-  const { kpis, daily_data, brand_data, error_categories, error_data, heatmap_data, heatmap_columns, card_type_data } = data;
+  const { kpis, daily_data, brand_data, error_data, heatmap_data, heatmap_columns, transactions } = data;
 
-  // Calcular período e dias
-  const dates = data.transactions?.map((t: any) => parseISO(t.date)) || [];
+  // Calculate period and days
+  const dates = transactions?.map((t: any) => parseISO(t.date)) || [];
   const startDate = dates.length > 0 ? min(dates) : new Date();
   const endDate = dates.length > 0 ? max(dates) : new Date();
   const daysCount = differenceInDays(endDate, startDate) + 1;
   const periodString = `${format(startDate, "MMMM dd")} to ${format(endDate, "MMMM dd, yyyy")}`;
 
-  // Função para determinar a cor da célula do heatmap baseada no valor
+  // Heatmap color function
   const getHeatmapColor = (value: number) => {
-    if (value === 0) return '#FFFBEB'; // Amarelo muito claro
-    if (value < 20) return '#FDE68A'; // Amarelo claro
-    if (value < 50) return '#FCD34D'; // Amarelo médio
-    if (value < 80) return '#FB923C'; // Laranja
-    if (value < 100) return '#EF4444'; // Vermelho claro
-    return '#991B1B'; // Vermelho escuro
+    if (value === 0) return '#FFFBEB'; // Very light yellow
+    if (value < 20) return '#FDE68A'; // Light yellow
+    if (value < 50) return '#FCD34D'; // Medium yellow
+    if (value < 80) return '#FB923C'; // Orange
+    if (value < 100) return '#EF4444'; // Light red
+    return '#991B1B'; // Dark red
   };
 
   const getHeatmapTextColor = (value: number) => {
     return value > 80 ? 'white' : '#1E293B';
   };
 
-  // Determinar quantos erros mostrar
+  // Determine errors to display
   const displayedErrors = showAllErrors ? error_data : error_data?.slice(0, 5);
+
+  // Pagination logic
+  const totalPages = Math.ceil((transactions?.length || 0) / itemsPerPage);
+  const paginatedTransactions = transactions?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <DashboardLayout>
-      {/* Header Section - Simplified */}
+      {/* Header Section */}
       <div id="overview" className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 scroll-mt-28">
         <div>
           <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Payment Performance</h2>
@@ -100,7 +107,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* KPI Section - Unified Block with Segregation */}
+      {/* KPI Section */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm mb-12 overflow-hidden">
         <div className="p-6 border-b border-slate-100 bg-slate-50/50">
           <div className="flex items-center gap-3">
@@ -112,7 +119,7 @@ export default function Home() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-          {/* Authorization (Sem Captura) */}
+          {/* Authorization */}
           <div className="p-8 hover:bg-slate-50/30 transition-colors">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
@@ -159,7 +166,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Capture (Com Captura) */}
+          {/* Capture */}
           <div className="p-8 hover:bg-slate-50/30 transition-colors">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
@@ -235,7 +242,7 @@ export default function Home() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
                 <XAxis 
                   dataKey="date" 
-                  tickFormatter={(val) => format(parseISO(val), "dd/MM")}
+                  tickFormatter={(val) => format(parseISO(val), "MM/dd")}
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: '#64748B', fontSize: 12 }}
@@ -298,94 +305,7 @@ export default function Home() {
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Approval</span>
               </div>
             </div>
-
-
           </div>
-        </div>
-      </div>
-
-      {/* Card Type Performance */}
-      <div id="cards" className="mb-12 scroll-mt-28">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
-            <CreditCard size={20} />
-          </div>
-          <h3 className="font-bold text-slate-800 text-xl">Performance por Tipo de Cartão</h3>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {card_type_data?.map((type: any, index: number) => (
-            <div key={index} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h4 className="font-bold text-slate-900 text-lg capitalize">
-                    {type.type === 'credit' ? 'Crédito' : 
-                     type.type === 'debit' ? 'Débito' : 
-                     type.type === 'multiple' ? 'Múltiplo' : type.type}
-                  </h4>
-                  <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">{type.total} Transações</span>
-                </div>
-                <span className={cn(
-                  "px-2 py-1 rounded text-xs font-bold",
-                  (type.approval_rate || 0) >= 70 ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"
-                )}>
-                  {type.approval_rate?.toFixed(1) || "0.0"}%
-                </span>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden flex mb-4">
-                <div 
-                  className="h-full bg-emerald-500" 
-                  style={{ width: `${type.approval_rate || 0}%` }}
-                ></div>
-                <div 
-                  className="h-full bg-rose-500" 
-                  style={{ width: `${100 - (type.approval_rate || 0)}%` }}
-                ></div>
-              </div>
-              
-              <div className="flex justify-between text-sm mb-6">
-                <div className="flex flex-col">
-                  <span className="text-emerald-600 font-bold">{type.success || 0}</span>
-                  <span className="text-xs text-slate-400">Aprovadas</span>
-                </div>
-                <div className="flex flex-col text-right">
-                  <span className="text-rose-600 font-bold">{type.failed || 0}</span>
-                  <span className="text-xs text-slate-400">Reprovadas</span>
-                </div>
-              </div>
-
-              {/* Brand Breakdown */}
-              {type.brands && type.brands.length > 0 && (
-                <div className="pt-4 border-t border-slate-100">
-                  <p className="text-xs font-bold text-slate-400 uppercase mb-3">Por Bandeira</p>
-                  <div className="space-y-3">
-                    {type.brands.map((brand: any, idx: number) => (
-                      <div key={idx} className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2">
-                          <div className={cn(
-                            "w-2 h-2 rounded-full",
-                            brand.brand === 'visa' ? 'bg-blue-600' : 'bg-orange-500'
-                          )}></div>
-                          <span className="capitalize text-slate-700 font-medium">{brand.brand}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-slate-400 text-xs">{brand.total} txns</span>
-                          <span className={cn(
-                            "font-bold",
-                            (brand.rate || 0) >= 70 ? 'text-emerald-600' : 'text-rose-600'
-                          )}>
-                            {brand.rate?.toFixed(1) || "0.0"}%
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
         </div>
       </div>
 
@@ -395,7 +315,7 @@ export default function Home() {
           <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
             <Grid size={20} />
           </div>
-          <h3 className="font-bold text-slate-800 text-xl">Distribuição de Erros por Bandeira</h3>
+          <h3 className="font-bold text-slate-800 text-xl">Error Distribution by Brand</h3>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -404,7 +324,7 @@ export default function Home() {
               <thead>
                 <tr>
                   <th className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs border-b border-slate-100">
-                    Bandeira
+                    Brand
                   </th>
                   {heatmap_columns?.map((col: string) => (
                     <th key={col} className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs text-center border-b border-slate-100">
@@ -415,21 +335,21 @@ export default function Home() {
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {heatmap_data?.map((row: any) => (
-                  <tr key={row.brand} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={row.name} className="hover:bg-slate-50/50 transition-colors">
                     <td className="px-6 py-4 font-bold text-slate-900 capitalize border-r border-slate-100 bg-slate-50/30">
-                      {row.brand}
+                      {row.name}
                     </td>
                     {heatmap_columns?.map((col: string) => {
                       const value = row[col] || 0;
                       return (
                         <td 
-                          key={`${row.brand}-${col}`} 
+                          key={`${row.name}-${col}`} 
                           className="px-6 py-4 text-center font-bold cursor-default"
                           style={{ 
                             backgroundColor: getHeatmapColor(value),
                             color: getHeatmapTextColor(value)
                           }}
-                          title={`${value} ocorrências de ${col} em ${row.brand}`}
+                          title={`${value} occurrences of ${col} in ${row.name}`}
                         >
                           {value}
                         </td>
@@ -444,7 +364,7 @@ export default function Home() {
           <div className="bg-slate-50 px-6 py-3 border-t border-slate-100 flex justify-end gap-6 text-xs font-medium text-slate-500">
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#FFFBEB] border border-slate-200"></span>
-              <span>0 Ocorrências</span>
+              <span>0 Occurrences</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#FDE68A]"></span>
@@ -474,146 +394,136 @@ export default function Home() {
       <div id="errors" className="mb-12 scroll-mt-28">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
-            <AlertCircle size={20} />
+            <ShieldAlert size={20} />
           </div>
-          <h3 className="font-bold text-slate-800 text-xl">Top Decline Reasons</h3>
+          <h3 className="font-bold text-slate-800 text-xl">Decline Reasons</h3>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="divide-y divide-slate-100">
             {displayedErrors?.map((error: any, index: number) => (
-              <div key={index} className="p-5 hover:bg-slate-50/50 transition-colors">
-                <div className="flex justify-between items-center mb-3">
-                  <div className="flex items-center gap-3">
-                    <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-mono font-bold border border-slate-200">
-                      {error.code}
-                    </span>
-                    <h4 className="font-bold text-slate-800 text-sm md:text-base">
-                      {error.details}
-                    </h4>
+              <div key={index} className="p-6 hover:bg-slate-50/50 transition-colors flex items-center justify-between group">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-full bg-rose-50 flex items-center justify-center text-rose-600 font-bold text-sm border border-rose-100 group-hover:scale-110 transition-transform">
+                    {index + 1}
                   </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded border border-rose-100">
-                      {error.count} failures
-                    </span>
-                    <span className="text-sm font-bold text-slate-900 w-12 text-right">{error.percentage?.toFixed(1) || "0.0"}%</span>
+                  <div>
+                    <h4 className="font-bold text-slate-900 text-lg">{error.details}</h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs font-mono border border-slate-200">
+                        Code: {error.code}
+                      </span>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                  <div 
-                    className="bg-rose-500 h-1.5 rounded-full transition-all duration-500" 
-                    style={{ width: `${error.percentage || 0}%` }}
-                  ></div>
+                <div className="text-right">
+                  <span className="block text-2xl font-bold text-slate-900">{error.count}</span>
+                  <span className="text-sm font-medium text-slate-500">{error.percentage?.toFixed(1)}% of total</span>
                 </div>
               </div>
             ))}
           </div>
           
-          <div className="bg-slate-50 border-t border-slate-100 p-2">
+          {error_data && error_data.length > 5 && (
             <button 
               onClick={() => setShowAllErrors(!showAllErrors)}
-              className="w-full flex items-center justify-center gap-2 text-sm font-bold text-slate-600 hover:text-blue-600 hover:bg-blue-50/50 py-3 rounded-lg transition-all"
+              className="w-full py-4 bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-colors border-t border-slate-100 flex items-center justify-center gap-2"
             >
               {showAllErrors ? (
-                <>
-                  <ChevronUp size={16} />
-                  Show Less
-                </>
+                <>Show Less <ChevronUp size={16} /></>
               ) : (
-                <>
-                  <ChevronDown size={16} />
-                  View All ({error_data?.length || 0})
-                </>
+                <>Show All Reasons ({error_data.length - 5} more) <ChevronDown size={16} /></>
               )}
             </button>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Recent Transactions Table */}
-      <div id="transactions-list" className="mb-12 scroll-mt-28">
+      {/* Transaction Table */}
+      <div id="table" className="mb-12 scroll-mt-28">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
             <ListFilter size={20} />
           </div>
-          <h3 className="font-bold text-slate-800 text-xl">Full Transaction History</h3>
+          <h3 className="font-bold text-slate-800 text-xl">Transaction History</h3>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100">
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Date</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Order ID</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Status</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">External ID</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Category</th>
+                <tr>
+                  <th className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs border-b border-slate-100">Date</th>
+                  <th className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs border-b border-slate-100">Order ID</th>
+                  <th className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs border-b border-slate-100">Category</th>
+                  <th className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs border-b border-slate-100">Status</th>
+                  <th className="px-6 py-4 bg-slate-50 text-slate-500 font-bold uppercase tracking-wider text-xs border-b border-slate-100">External ID</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {data.transactions?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((txn: any, index: number) => {
-                  const isSuccess = txn.status === 'authorized' || txn.status === 'captured' || txn.status === 'success';
-                  return (
-                    <tr key={index} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-6 py-4 text-slate-600 font-medium whitespace-nowrap">
-                        {txn.date ? format(parseISO(txn.date), "dd/MM/yyyy HH:mm") : "-"}
-                      </td>
-                      <td className="px-6 py-4 text-slate-600 font-mono text-xs">
-                        {txn.order_id || "-"}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={cn(
-                          "px-2 py-1 rounded text-xs font-bold border uppercase",
-                          isSuccess 
-                            ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
-                            : "bg-rose-50 text-rose-700 border-rose-100"
-                        )}>
-                          {isSuccess ? "Aprovada" : "Recusada"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-slate-600 font-mono text-xs">
-                        {txn.external_id || "-"}
-                      </td>
-                      <td className="px-6 py-4 text-slate-600 text-xs uppercase">
-                        {txn.category || "-"}
-                      </td>
-                    </tr>
-                  );
-                })}
+                {paginatedTransactions?.map((txn: any, idx: number) => (
+                  <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4 text-slate-600 font-medium whitespace-nowrap">
+                      {format(parseISO(txn.date), "MMM dd, yyyy HH:mm")}
+                    </td>
+                    <td className="px-6 py-4 text-slate-900 font-mono text-xs">
+                      {txn.order_id || "-"}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={cn(
+                        "px-2 py-1 rounded-full text-xs font-bold border capitalize",
+                        txn.category === 'Authorization' ? "bg-blue-50 text-blue-700 border-blue-200" :
+                        txn.category === 'Capture' ? "bg-indigo-50 text-indigo-700 border-indigo-200" :
+                        "bg-slate-50 text-slate-700 border-slate-200"
+                      )}>
+                        {txn.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={cn(
+                        "px-2 py-1 rounded-full text-xs font-bold border flex items-center gap-1 w-fit",
+                        (txn.status === 'Success' || txn.status === 'Authorized' || txn.status === 'Captured')
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                          : "bg-rose-50 text-rose-700 border-rose-200"
+                      )}>
+                        {(txn.status === 'Success' || txn.status === 'Authorized' || txn.status === 'Captured') 
+                          ? <CheckCircle2 size={12} /> 
+                          : <XCircle size={12} />
+                        }
+                        {txn.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-slate-500 font-mono text-xs">
+                      {txn.external_id || "-"}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-          
+
           {/* Pagination */}
-          {data.transactions && data.transactions.length > 0 && (
-            <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50">
+          {totalPages > 1 && (
+            <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
               <span className="text-sm text-slate-500">
-                Mostrando <span className="font-bold">{(currentPage - 1) * itemsPerPage + 1}</span> a <span className="font-bold">{Math.min(currentPage * itemsPerPage, data.transactions.length)}</span> de <span className="font-bold">{data.transactions.length}</span> transações
+                Showing <span className="font-bold text-slate-900">{(currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-bold text-slate-900">{Math.min(currentPage * itemsPerPage, transactions?.length || 0)}</span> of <span className="font-bold text-slate-900">{transactions?.length}</span> results
               </span>
               <div className="flex gap-2">
-                <button 
+                <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 rounded border border-slate-200 bg-white text-slate-600 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Anterior
+                  Previous
                 </button>
-                <button 
-                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(data.transactions.length / itemsPerPage), p + 1))}
-                  disabled={currentPage >= Math.ceil(data.transactions.length / itemsPerPage)}
-                  className="px-3 py-1 rounded border border-slate-200 bg-white text-slate-600 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  Próxima
+                  Next
                 </button>
               </div>
-            </div>
-          )}
-
-          {(!data.transactions || data.transactions.length === 0) && (
-            <div className="p-8 text-center text-slate-500">
-              Nenhuma transação encontrada.
             </div>
           )}
         </div>
