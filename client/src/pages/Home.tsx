@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, 
   PieChart, Pie, Cell, Legend
 } from "recharts";
 import { 
   CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
   CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp,
-  Ban, Phone, AlertTriangle
+  Ban, Phone, AlertTriangle, HelpCircle
 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { format, parseISO, differenceInDays, min, max } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -119,18 +125,42 @@ export default function Home() {
       : { allowed: false, label: 'No Retry' };
   };
 
-    // Get solution suggestion for error code
+    // Get solution suggestion for error code with detailed steps
     const getErrorSolution = (code: string) => {
-      const solutions: Record<string, string> = {
-        'ABECS-51': 'Suggest customer to use another card or contact bank.',
-        'ABECS-59': 'Review anti-fraud rules or contact customer to confirm.',
-        'ABECS-91': 'Retry transaction after a few minutes.',
-        'ABECS-57': 'Check if card brand is enabled in your merchant account.',
-        'ABECS-82': 'Ask customer to verify card details or use another card.',
-        'ABECS-83': 'Ask customer to verify PIN or use another card.',
-        'GEN-002': 'System error. Retry later or contact support.'
+      const solutions: Record<string, { short: string, details: string }> = {
+        'ABECS-51': {
+          short: 'Insufficient Funds: Suggest alternative card.',
+          details: 'Customer has insufficient balance. 1. Recommend using a different card. 2. If debit, suggest credit. 3. Do not retry immediately to avoid blocking.'
+        },
+        'ABECS-59': {
+          short: 'Suspected Fraud: Enable 3DS authentication.',
+          details: 'Transaction flagged as high risk. 1. Enable 3D Secure (3DS 2.0) to shift liability. 2. Use Zero Auth to validate card before charging. 3. Contact customer to confirm legitimacy.'
+        },
+        'ABECS-91': {
+          short: 'Issuer Down: Retry later.',
+          details: 'Bank system is temporarily unavailable. 1. Wait 15-30 minutes before retrying. 2. Do not retry repeatedly in short intervals. 3. If persistent, notify support.'
+        },
+        'ABECS-57': {
+          short: 'Not Permitted: Check merchant category (MCC).',
+          details: 'Transaction not allowed for this card type. 1. Verify if your MCC is blocked by the issuer. 2. Check if card brand is enabled in your acquirer settings.'
+        },
+        'ABECS-82': {
+          short: 'Invalid Card: Validate via Zero Auth.',
+          details: 'Card number is invalid or malformed. 1. Implement Zero Auth ($0.00 verification) at checkout. 2. Use Luhn algorithm check on frontend. 3. Ask customer to re-enter details.'
+        },
+        'ABECS-83': {
+          short: 'Invalid PIN/Data: Verify input fields.',
+          details: 'Authentication data is incorrect. 1. Ask customer to re-enter CVV and Expiry Date. 2. Ensure encryption keys are up to date. 3. Suggest using a digital wallet (Apple/Google Pay).'
+        },
+        'GEN-002': {
+          short: 'System Error: Contact technical support.',
+          details: 'Generic gateway error. 1. Check API logs for specific sub-codes. 2. Verify API credentials. 3. Retry once after 5 minutes.'
+        }
       };
-      return solutions[code] || 'Monitor error rate and contact support if persistent.';
+      return solutions[code] || { 
+        short: 'Monitor error rate.', 
+        details: 'No specific recommendation available. Monitor for spikes and contact acquirer support if rate exceeds 1%.' 
+      };
     };
 
     // Determine errors to display
@@ -319,7 +349,7 @@ export default function Home() {
                   tickLine={false}
                   tick={{ fill: '#64748B', fontSize: 12 }}
                 />
-                <Tooltip 
+                <RechartsTooltip 
                   cursor={{ fill: '#F8FAFC' }}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                   formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
@@ -372,10 +402,11 @@ export default function Home() {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                  <RechartsTooltip 
+                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
-              
               {/* Center Text */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="text-4xl font-bold text-slate-900">{kpis?.approval_rate?.toFixed(1) || "0.0"}%</span>
@@ -581,10 +612,26 @@ export default function Home() {
                       </div>
                       <h4 className="font-bold text-slate-900 text-base">{error.details}</h4>
                       {!showAllErrors && (
-                        <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
-                          <Info size={12} className="text-blue-500" />
-                          {getErrorSolution(error.code)}
-                        </p>
+                        <div className="mt-1 flex items-center gap-1.5">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="flex items-center gap-1.5 cursor-help group/tooltip">
+                                  <Info size={12} className="text-blue-500" />
+                                  <p className="text-xs text-slate-500 group-hover/tooltip:text-blue-600 transition-colors border-b border-dashed border-slate-300 hover:border-blue-400">
+                                    {getErrorSolution(error.code).short}
+                                  </p>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-xs bg-slate-900 text-slate-50 p-3 shadow-xl border-slate-800">
+                                <div className="space-y-2">
+                                  <p className="font-bold text-xs uppercase tracking-wider text-slate-400">Mitigation Strategy</p>
+                                  <p className="text-sm leading-relaxed">{getErrorSolution(error.code).details}</p>
+                                </div>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                       )}
                     </div>
                   </div>
