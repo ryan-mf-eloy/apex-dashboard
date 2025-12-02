@@ -512,6 +512,12 @@ export default function Home() {
                     cursor={{ fill: '#F8FAFC' }}
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                     formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
+                    labelFormatter={(label) => (
+                      <div>
+                        <div className="font-bold mb-1">{label}</div>
+                        <div className="text-xs text-slate-400 font-normal">Click to view details</div>
+                      </div>
+                    )}
                   />
                   <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 4, 4, 0]} barSize={40} cursor="pointer" />
                   <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[0, 4, 4, 0]} barSize={40} cursor="pointer" />
