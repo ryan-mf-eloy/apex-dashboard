@@ -116,6 +116,12 @@ export default function Home() {
             </div>
             <h3 className="font-bold text-slate-800 text-lg">Transaction Overview</h3>
           </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Transactions:</span>
+            <span className="text-lg font-bold text-slate-900">
+              {(kpis?.authorization?.total || 0) + (kpis?.capture?.total || 0)}
+            </span>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
