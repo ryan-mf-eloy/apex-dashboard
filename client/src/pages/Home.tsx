@@ -89,6 +89,23 @@ export default function Home() {
     return <AlertTriangle size={16} />;
   };
 
+  // Determine if error is retryable based on ABECS standards
+  // Reversible = Retry Allowed, Irreversible = No Retry
+  const getRetryStatus = (code: string) => {
+    const reversibleCodes = ['ABECS-04', 'ABECS-05', 'ABECS-06', 'ABECS-38', 'ABECS-51', 'ABECS-55', 'ABECS-59', 'ABECS-61', 'ABECS-62', 'ABECS-65', 'ABECS-75', 'ABECS-78', 'ABECS-91', 'ABECS-96', 'ABECS-AB', 'ABECS-AC', 'ABECS-P6'];
+    
+    // Check if code is in reversible list (allowing for partial matches if needed, but exact match is safer)
+    // Using includes for exact match against the list
+    const isReversible = reversibleCodes.some(c => code.includes(c.replace('ABECS-', '')));
+    
+    // Specific overrides based on common knowledge if code format varies
+    if (code.includes('51') || code.includes('59') || code.includes('91')) return { allowed: true, label: 'Retry Allowed' };
+    
+    return isReversible 
+      ? { allowed: true, label: 'Retry Allowed' } 
+      : { allowed: false, label: 'No Retry' };
+  };
+
   // Determine errors to display
   const displayedErrors = showAllErrors ? error_data : error_data?.slice(0, 5);
 
@@ -518,10 +535,22 @@ export default function Home() {
                       {getErrorIcon(error.code, error.details)}
                     </div>
                     <div>
-                      <div className="flex items-center gap-3 mb-1">
+                      <div className="flex items-center gap-2 mb-1">
                         <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded border border-slate-200 uppercase tracking-wider">
                           {error.code}
                         </span>
+                        {(() => {
+                          const status = getRetryStatus(error.code);
+                          return (
+                            <span className={`px-1.5 py-0.5 text-[10px] font-bold rounded border uppercase tracking-wider ${
+                              status.allowed 
+                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
+                                : 'bg-slate-50 text-slate-400 border-slate-100'
+                            }`}>
+                              {status.label}
+                            </span>
+                          );
+                        })()}
                       </div>
                       <h4 className="font-bold text-slate-900 text-base">{error.details}</h4>
                     </div>
