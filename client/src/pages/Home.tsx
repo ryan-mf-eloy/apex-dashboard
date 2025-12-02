@@ -110,19 +110,23 @@ export default function Home() {
       {/* KPI Section */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm mb-12 overflow-hidden">
         <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
-              <ListFilter size={20} />
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
+                <ListFilter size={20} />
+              </div>
+              <h3 className="font-bold text-slate-800 text-lg">Transaction Overview</h3>
             </div>
-            <h3 className="font-bold text-slate-800 text-lg">Transaction Overview</h3>
+            <div className="flex flex-col items-end">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Transactions:</span>
+                <span className="text-lg font-bold text-slate-900">
+                  {(kpis?.authorization?.total || 0) + (kpis?.capture?.total || 0)}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400 mt-1">Including only captures and authorizations</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Transactions:</span>
-            <span className="text-lg font-bold text-slate-900">
-              {(kpis?.authorization?.total || 0) + (kpis?.capture?.total || 0)}
-            </span>
-          </div>
-          <p className="text-xs text-slate-400 mt-1 ml-11">Including only captures and authorizations</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
@@ -263,6 +267,17 @@ export default function Home() {
                 <Tooltip 
                   cursor={{ fill: '#F8FAFC' }}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
+                  labelFormatter={(label) => {
+                    const dateData = daily_data.find((d: any) => d.date === label);
+                    const total = dateData ? dateData.success + dateData.failed : 0;
+                    return (
+                      <div className="mb-2">
+                        <div className="font-bold text-slate-900">{format(parseISO(label), "MMMM dd, yyyy")}</div>
+                        <div className="text-xs text-slate-500 font-medium">Total: {total} transactions</div>
+                      </div>
+                    );
+                  }}
                 />
                 <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 0, 4, 4]} barSize={32} />
                 <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[4, 4, 0, 0]} barSize={32} />
@@ -482,34 +497,41 @@ export default function Home() {
           <h3 className="font-bold text-slate-800 text-xl">Top Decline Reasons</h3>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <div className="space-y-8">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="divide-y divide-slate-100">
             {displayedErrors?.map((error: any, index: number) => (
-              <div key={index} className="relative">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
-                  <div className="flex items-start md:items-center gap-3">
-                    <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-bold font-mono border border-slate-200 whitespace-nowrap">
-                      {error.code}
-                    </span>
-                    <h4 className="font-bold text-slate-800 text-sm md:text-base uppercase tracking-tight">
-                      {error.details}
-                    </h4>
+              <div key={index} className="p-6 hover:bg-slate-50/50 transition-colors group">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
+                  <div className="flex items-start gap-4">
+                    <div className="mt-1 p-1.5 bg-rose-50 text-rose-600 rounded-full shrink-0 group-hover:bg-rose-100 transition-colors">
+                      <ShieldAlert size={16} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-3 mb-1">
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-[10px] font-bold rounded border border-slate-200 uppercase tracking-wider">
+                          {error.code}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-slate-900 text-base">{error.details}</h4>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between md:justify-end gap-4 pl-12 md:pl-0">
-                    <span className="px-2 py-1 bg-rose-50 text-rose-600 rounded text-xs font-bold border border-rose-100 whitespace-nowrap">
-                      {error.count} failures
-                    </span>
-                    <span className="font-bold text-slate-900 text-sm w-12 text-right">
-                      {error.percentage?.toFixed(1)}%
-                    </span>
+                  <div className="flex items-center gap-8 min-w-[240px] justify-end">
+                    <div className="text-right">
+                      <span className="block font-bold text-rose-600 text-lg">{error.count}</span>
+                      <span className="text-xs text-slate-400 font-bold uppercase">Failures</span>
+                    </div>
+                    <div className="text-right w-20">
+                      <span className="block font-bold text-slate-900 text-lg">{error.percentage.toFixed(1)}%</span>
+                      <span className="text-xs text-slate-400 font-bold uppercase">Impact</span>
+                    </div>
                   </div>
                 </div>
                 
                 {/* Progress Bar */}
-                <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
+                <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden mt-2">
                   <div 
-                    className="h-full bg-rose-500 rounded-full"
-                    style={{ width: `${Math.min(error.percentage * 2, 100)}%` }} // Scale up for visibility
+                    className="bg-rose-500 h-full rounded-full transition-all duration-500 ease-out" 
+                    style={{ width: `${error.percentage}%` }}
                   ></div>
                 </div>
               </div>
@@ -517,15 +539,15 @@ export default function Home() {
           </div>
           
           {error_data && error_data.length > 5 && (
-            <div className="mt-8 pt-4 border-t border-slate-100 flex justify-center">
+            <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
               <button 
                 onClick={() => setShowAllErrors(!showAllErrors)}
-                className="px-6 py-2 bg-white border border-slate-200 rounded-full text-slate-600 font-medium text-sm hover:bg-slate-50 transition-colors flex items-center gap-2 shadow-sm"
+                className="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center justify-center gap-2 mx-auto px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors"
               >
                 {showAllErrors ? (
                   <>Show Less <ChevronUp size={16} /></>
                 ) : (
-                  <>Show All Reasons ({error_data.length - 5} more) <ChevronDown size={16} /></>
+                  <>Show All Decline Reasons <ChevronDown size={16} /></>
                 )}
               </button>
             </div>
