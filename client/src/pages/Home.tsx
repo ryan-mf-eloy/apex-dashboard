@@ -325,10 +325,8 @@ export default function Home() {
                 <h4 className="font-bold text-slate-900 text-lg capitalize">
                   {type.type === 'multiple' ? 'Multiple' : type.type === 'credit' ? 'Credit' : 'Debit'}
                 </h4>
-                <span className={`px-2 py-1 rounded text-xs font-bold ${
-                  (100 - type.approval_rate) > 0 ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-500'
-                }`}>
-                  {(100 - type.approval_rate).toFixed(1)}%
+                <span className="px-2 py-1 rounded text-xs font-bold bg-red-50 text-red-600">
+                  {type.approval_rate.toFixed(1)}%
                 </span>
               </div>
               
@@ -372,7 +370,7 @@ export default function Home() {
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="text-slate-400 text-xs">{brand.total} txns</span>
-                        <span className="font-bold text-rose-600">{(100 - brand.rate).toFixed(1)}%</span>
+                        <span className="font-bold text-rose-600">{brand.rate.toFixed(1)}%</span>
                       </div>
                     </div>
                   ))}
