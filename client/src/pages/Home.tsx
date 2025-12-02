@@ -130,7 +130,7 @@ export default function Home() {
       const solutions: Record<string, { short: string, details: string }> = {
         'ABECS-51': {
           short: 'Insufficient Funds: Suggest alternative card.',
-          details: 'Customer has insufficient balance. 1. Recommend using a different card. 2. If debit, suggest credit. 3. Do not retry immediately to avoid blocking.'
+          details: 'Customer has insufficient balance. 1. Recommend using a different card. 2. If credit, suggest debit. 3. Do not retry immediately to avoid blocking.'
         },
         'ABECS-59': {
           short: 'Suspected Fraud: Enable 3DS authentication.',
