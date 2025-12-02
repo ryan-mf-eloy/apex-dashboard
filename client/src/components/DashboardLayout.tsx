@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <footer className="bg-white border-t border-slate-200 py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-slate-500 text-sm">
-            Relatório gerado automaticamente em {new Date().toLocaleDateString('pt-BR')} • Confidencial
+            Report automatically generated on {new Date().toLocaleDateString('en-US')} • Confidential
           </p>
         </div>
       </footer>

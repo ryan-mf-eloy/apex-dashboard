@@ -214,17 +214,17 @@ export default function Home() {
         <div className="lg:col-span-2 bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h3 className="font-bold text-slate-900 text-xl">Volume Diário de Transações</h3>
-              <p className="text-slate-500 text-sm mt-1">Comparativo de transações aprovadas vs recusadas</p>
+              <h3 className="font-bold text-slate-900 text-xl">Daily Transaction Volume</h3>
+              <p className="text-slate-500 text-sm mt-1">Comparison of approved vs declined transactions</p>
             </div>
             <div className="flex gap-6 text-sm font-medium">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
-                <span className="text-slate-700">Sucessos</span>
+                <span className="text-slate-700">Success</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-rose-500"></span>
-                <span className="text-slate-700">Falhas</span>
+                <span className="text-slate-700">Failed</span>
               </div>
             </div>
           </div>
@@ -260,8 +260,8 @@ export default function Home() {
         {/* Conversion Rate Donut */}
         <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
           <div className="mb-6">
-            <h3 className="font-bold text-slate-900 text-xl">Taxa de Aprovação Geral</h3>
-            <p className="text-slate-500 text-sm mt-1">Distribuição total do período analisado</p>
+            <h3 className="font-bold text-slate-900 text-xl">General Approval Rate</h3>
+            <p className="text-slate-500 text-sm mt-1">Total distribution of the analyzed period</p>
           </div>
           
           <div className="flex-1 flex flex-col justify-center items-center relative">
@@ -270,8 +270,8 @@ export default function Home() {
                 <PieChart>
                   <Pie
                     data={[
-                      { name: 'Aprovadas', value: (kpis?.authorization?.success || 0) + (kpis?.capture?.success || 0), color: COLORS.success },
-                      { name: 'Reprovadas', value: (kpis?.authorization?.failed || 0) + (kpis?.capture?.failed || 0), color: COLORS.danger }
+                      { name: 'Approved', value: (kpis?.authorization?.success || 0) + (kpis?.capture?.success || 0), color: COLORS.success },
+                      { name: 'Declined', value: (kpis?.authorization?.failed || 0) + (kpis?.capture?.failed || 0), color: COLORS.danger }
                     ]}
                     cx="50%"
                     cy="50%"
@@ -282,8 +282,8 @@ export default function Home() {
                     stroke="none"
                   >
                     {[
-                      { name: 'Aprovadas', value: (kpis?.authorization?.success || 0) + (kpis?.capture?.success || 0), color: COLORS.success },
-                      { name: 'Reprovadas', value: (kpis?.authorization?.failed || 0) + (kpis?.capture?.failed || 0), color: COLORS.danger }
+                      { name: 'Approved', value: (kpis?.authorization?.success || 0) + (kpis?.capture?.success || 0), color: COLORS.success },
+                      { name: 'Declined', value: (kpis?.authorization?.failed || 0) + (kpis?.capture?.failed || 0), color: COLORS.danger }
                     ].map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
@@ -295,7 +295,7 @@ export default function Home() {
               {/* Center Text */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="text-4xl font-bold text-slate-900">{kpis?.approval_rate?.toFixed(1) || "0.0"}%</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Aprovação</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">Approval</span>
               </div>
             </div>
 
@@ -476,7 +476,7 @@ export default function Home() {
           <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
             <AlertCircle size={20} />
           </div>
-          <h3 className="font-bold text-slate-800 text-xl">Principais Motivos de Recusa</h3>
+          <h3 className="font-bold text-slate-800 text-xl">Top Decline Reasons</h3>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -494,7 +494,7 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded border border-rose-100">
-                      {error.count} falhas
+                      {error.count} failures
                     </span>
                     <span className="text-sm font-bold text-slate-900 w-12 text-right">{error.percentage?.toFixed(1) || "0.0"}%</span>
                   </div>
@@ -518,12 +518,12 @@ export default function Home() {
               {showAllErrors ? (
                 <>
                   <ChevronUp size={16} />
-                  Mostrar Menos
+                  Show Less
                 </>
               ) : (
                 <>
                   <ChevronDown size={16} />
-                  Ver Todos ({error_data?.length || 0})
+                  View All ({error_data?.length || 0})
                 </>
               )}
             </button>
@@ -537,7 +537,7 @@ export default function Home() {
           <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
             <ListFilter size={20} />
           </div>
-          <h3 className="font-bold text-slate-800 text-xl">Histórico Completo de Transações</h3>
+          <h3 className="font-bold text-slate-800 text-xl">Full Transaction History</h3>
         </div>
 
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
@@ -545,11 +545,11 @@ export default function Home() {
             <table className="w-full text-sm text-left">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-100">
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Data</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Date</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Order ID</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Status</th>
                   <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">External ID</th>
-                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Categoria</th>
+                  <th className="px-6 py-4 font-bold text-slate-500 uppercase tracking-wider text-xs">Category</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
