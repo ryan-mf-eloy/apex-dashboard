@@ -386,6 +386,26 @@
     "ABECS-57",
     "GEN-002"
   ],
+  "period_data": [
+    {
+      "period": "Morning",
+      "success": 134,
+      "failed": 104,
+      "total": 238
+    },
+    {
+      "period": "Afternoon",
+      "success": 493,
+      "failed": 306,
+      "total": 799
+    },
+    {
+      "period": "Night",
+      "success": 474,
+      "failed": 312,
+      "total": 786
+    }
+  ],
   "transactions": [
     {
       "date": "2025-12-01T14:06:12.668000",

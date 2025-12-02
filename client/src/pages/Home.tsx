@@ -417,6 +417,52 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Period Analysis Chart */}
+      <div className="mb-12">
+        <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h3 className="font-bold text-slate-900 text-xl">Transaction Volume by Period</h3>
+              <p className="text-slate-500 text-sm mt-1">Morning (06-12h), Afternoon (12-18h), Night (18-06h)</p>
+            </div>
+            <div className="flex gap-6 text-sm font-medium">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
+                <span className="text-slate-700">Success</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span className="text-slate-700">Failed</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data?.period_data} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
+                <XAxis type="number" hide />
+                <YAxis 
+                  dataKey="period" 
+                  type="category" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: '#64748B', fontSize: 14, fontWeight: 600 }}
+                  width={100}
+                />
+                <RechartsTooltip 
+                  cursor={{ fill: '#F8FAFC' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                  formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
+                />
+                <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 4, 4, 0]} barSize={40} />
+                <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[0, 4, 4, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
       {/* Performance by Card Type Section */}
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-6">
