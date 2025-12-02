@@ -37,6 +37,45 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 100;
 
+  const CustomTooltip = ({ active, payload, label, showClickHint }: any) => {
+    if (active && payload && payload.length) {
+      const success = payload.find((p: any) => p.dataKey === 'success')?.value || 0;
+      const failed = payload.find((p: any) => p.dataKey === 'failed')?.value || 0;
+      const total = success + failed;
+      const rate = total > 0 ? ((success / total) * 100).toFixed(2) : '0.00';
+
+      return (
+        <div className="bg-white p-4 rounded-xl shadow-lg border border-slate-100">
+          <p className="font-bold text-slate-900 mb-2">
+            {typeof label === 'number' ? `${label}:00 - ${label}:59` : label}
+          </p>
+          <div className="space-y-1 text-sm">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span className="text-slate-600">Approved: <span className="font-semibold text-slate-900">{success}</span></span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+              <span className="text-slate-600">Declined: <span className="font-semibold text-slate-900">{failed}</span></span>
+            </div>
+            <div className="pt-2 mt-2 border-t border-slate-100">
+              <div className="flex items-center gap-2">
+                <TrendingUp size={14} className="text-blue-600" />
+                <span className="text-slate-600">Approval Rate: <span className="font-bold text-blue-600">{rate}%</span></span>
+              </div>
+            </div>
+            {showClickHint && (
+              <div className="pt-2 mt-1 text-xs text-slate-400 font-normal">
+                Click to view details
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
   useEffect(() => {
     fetch("/data.json")
       .then(res => res.json())
@@ -479,9 +518,7 @@ export default function Home() {
                   />
                   <RechartsTooltip 
                     cursor={{ fill: '#F8FAFC' }}
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                    formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
-                    labelFormatter={(label) => `${label}:00 - ${label}:59`}
+                    content={<CustomTooltip />}
                   />
                   <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 0, 4, 4]} barSize={32} />
                   <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[4, 4, 0, 0]} barSize={32} />
@@ -510,14 +547,7 @@ export default function Home() {
                   />
                   <RechartsTooltip 
                     cursor={{ fill: '#F8FAFC' }}
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                    formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
-                    labelFormatter={(label) => (
-                      <div>
-                        <div className="font-bold mb-1">{label}</div>
-                        <div className="text-xs text-slate-400 font-normal">Click to view details</div>
-                      </div>
-                    )}
+                    content={<CustomTooltip showClickHint />}
                   />
                   <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 4, 4, 0]} barSize={40} cursor="pointer" />
                   <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[0, 4, 4, 0]} barSize={40} cursor="pointer" />
