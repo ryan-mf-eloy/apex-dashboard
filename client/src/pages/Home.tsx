@@ -47,13 +47,13 @@ export default function Home() {
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-          <p className="text-slate-500 font-medium">Carregando apresentação...</p>
+          <p className="text-slate-500 font-medium">Loading presentation...</p>
         </div>
       </div>
     );
   }
 
-  if (!data) return <div>Erro ao carregar dados.</div>;
+  if (!data) return <div>Error loading data.</div>;
 
   const { kpis, daily_data, brand_data, error_categories, error_data, heatmap_data, heatmap_columns, card_type_data } = data;
 
@@ -62,7 +62,7 @@ export default function Home() {
   const startDate = dates.length > 0 ? min(dates) : new Date();
   const endDate = dates.length > 0 ? max(dates) : new Date();
   const daysCount = differenceInDays(endDate, startDate) + 1;
-  const periodString = `${format(startDate, "dd 'de' MMMM", { locale: ptBR })} a ${format(endDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`;
+  const periodString = `${format(startDate, "MMMM dd")} to ${format(endDate, "MMMM dd, yyyy")}`;
 
   // Função para determinar a cor da célula do heatmap baseada no valor
   const getHeatmapColor = (value: number) => {
@@ -86,16 +86,16 @@ export default function Home() {
       {/* Header Section - Simplified */}
       <div id="overview" className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 scroll-mt-28">
         <div>
-          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Performance de Pagamentos</h2>
+          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Payment Performance</h2>
           <p className="text-slate-500 mt-2 text-lg">
-            Diagnóstico de aprovação e oportunidades de recuperação de receita
+            Approval diagnostics and revenue recovery opportunities
           </p>
         </div>
         <div className="flex flex-col items-end justify-center bg-white px-6 py-3 rounded-xl border border-slate-200 shadow-sm">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Período Analisado</span>
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Analyzed Period</span>
           <div className="flex items-baseline gap-2">
             <span className="text-slate-900 font-bold text-lg">{periodString}</span>
-            <span className="text-slate-500 text-sm font-medium">({daysCount} dias)</span>
+            <span className="text-slate-500 text-sm font-medium">({daysCount} days)</span>
           </div>
         </div>
       </div>
@@ -107,7 +107,7 @@ export default function Home() {
             <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
               <ListFilter size={20} />
             </div>
-            <h3 className="font-bold text-slate-800 text-lg">Visão Geral de Transações</h3>
+            <h3 className="font-bold text-slate-800 text-lg">Transaction Overview</h3>
           </div>
         </div>
         
@@ -119,14 +119,14 @@ export default function Home() {
                 <span className="w-2 h-8 bg-blue-500 rounded-full"></span>
                 <div>
                   <div className="flex items-center gap-3">
-                    <h4 className="font-bold text-slate-900 text-xl">Sem Captura</h4>
+                    <h4 className="font-bold text-slate-900 text-xl">No Capture</h4>
                     <span className={cn(
                       "px-2 py-0.5 rounded text-xs font-bold border",
                       (kpis?.authorization?.rate || 0) > 50 
                         ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
                         : "bg-rose-50 text-rose-700 border-rose-200"
                     )}>
-                      {kpis?.authorization?.rate?.toFixed(2) || "0.00"}% Aprov.
+                      {kpis?.authorization?.rate?.toFixed(2) || "0.00"}% Appr.
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization Only</p>
@@ -142,7 +142,7 @@ export default function Home() {
               <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
                 <div className="flex items-center gap-2 mb-2 text-emerald-700">
                   <CheckCircle2 size={16} />
-                  <span className="text-xs font-bold uppercase">Aprovadas</span>
+                  <span className="text-xs font-bold uppercase">Approved</span>
                 </div>
                 <span className="block text-2xl font-bold text-emerald-700">{kpis?.authorization?.success || 0}</span>
                 <span className="text-sm font-medium text-emerald-600/80">{kpis?.authorization?.rate?.toFixed(2) || "0.00"}%</span>
@@ -151,7 +151,7 @@ export default function Home() {
               <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
                 <div className="flex items-center gap-2 mb-2 text-rose-700">
                   <XCircle size={16} />
-                  <span className="text-xs font-bold uppercase">Reprovadas</span>
+                  <span className="text-xs font-bold uppercase">Declined</span>
                 </div>
                 <span className="block text-2xl font-bold text-rose-700">{kpis?.authorization?.failed || 0}</span>
                 <span className="text-sm font-medium text-rose-600/80">{((100 - (kpis?.authorization?.rate || 0))).toFixed(2)}%</span>
@@ -166,14 +166,14 @@ export default function Home() {
                 <span className="w-2 h-8 bg-indigo-500 rounded-full"></span>
                 <div>
                   <div className="flex items-center gap-3">
-                    <h4 className="font-bold text-slate-900 text-xl">Com Captura</h4>
+                    <h4 className="font-bold text-slate-900 text-xl">With Capture</h4>
                     <span className={cn(
                       "px-2 py-0.5 rounded text-xs font-bold border",
                       (kpis?.capture?.rate || 0) > 50 
                         ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
                         : "bg-rose-50 text-rose-700 border-rose-200"
                     )}>
-                      {kpis?.capture?.rate?.toFixed(2) || "0.00"}% Aprov.
+                      {kpis?.capture?.rate?.toFixed(2) || "0.00"}% Appr.
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization + Capture</p>
@@ -189,7 +189,7 @@ export default function Home() {
               <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
                 <div className="flex items-center gap-2 mb-2 text-emerald-700">
                   <CheckCircle2 size={16} />
-                  <span className="text-xs font-bold uppercase">Aprovadas</span>
+                  <span className="text-xs font-bold uppercase">Approved</span>
                 </div>
                 <span className="block text-2xl font-bold text-emerald-700">{kpis?.capture?.success || 0}</span>
                 <span className="text-sm font-medium text-emerald-600/80">{kpis?.capture?.rate?.toFixed(2) || "0.00"}%</span>
@@ -198,7 +198,7 @@ export default function Home() {
               <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
                 <div className="flex items-center gap-2 mb-2 text-rose-700">
                   <XCircle size={16} />
-                  <span className="text-xs font-bold uppercase">Reprovadas</span>
+                  <span className="text-xs font-bold uppercase">Declined</span>
                 </div>
                 <span className="block text-2xl font-bold text-rose-700">{kpis?.capture?.failed || 0}</span>
                 <span className="text-sm font-medium text-rose-600/80">{((100 - (kpis?.capture?.rate || 0))).toFixed(2)}%</span>
