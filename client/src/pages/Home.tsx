@@ -6,7 +6,8 @@ import {
 } from "recharts";
 import { 
   CreditCard, AlertCircle, ShieldAlert, Info, TrendingUp, 
-  CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp
+  CheckCircle2, XCircle, ListFilter, Grid, Wallet, ArrowRight, ChevronDown, ChevronUp,
+  Ban, Phone, AlertTriangle
 } from "lucide-react";
 import { format, parseISO, differenceInDays, min, max } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -76,6 +77,16 @@ export default function Home() {
 
   const getHeatmapTextColor = (value: number) => {
     return value > 80 ? 'white' : '#1E293B';
+  };
+
+  // Get icon for error code
+  const getErrorIcon = (code: string, details: string) => {
+    const lowerDetails = details.toLowerCase();
+    if (lowerDetails.includes('fraud') || code === 'ABECS-83' || code === 'ABECS-59') return <ShieldAlert size={16} />;
+    if (lowerDetails.includes('balance') || lowerDetails.includes('limit') || code === 'ABECS-51') return <Wallet size={16} />;
+    if (lowerDetails.includes('contact') || code === 'ABECS-82') return <Phone size={16} />;
+    if (lowerDetails.includes('unavailable') || code === 'ABECS-91') return <Ban size={16} />;
+    return <AlertTriangle size={16} />;
   };
 
   // Determine errors to display
@@ -504,7 +515,7 @@ export default function Home() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
                   <div className="flex items-start gap-4">
                     <div className="mt-1 p-1.5 bg-rose-50 text-rose-600 rounded-full shrink-0 group-hover:bg-rose-100 transition-colors">
-                      <ShieldAlert size={16} />
+                      {getErrorIcon(error.code, error.details)}
                     </div>
                     <div>
                       <div className="flex items-center gap-3 mb-1">
