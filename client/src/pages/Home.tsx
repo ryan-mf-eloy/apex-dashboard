@@ -440,7 +440,7 @@ export default function Home() {
               <p className="text-slate-500 text-sm mt-1">
                 {selectedPeriod 
                   ? 'Hourly breakdown of approved vs declined transactions' 
-                  : 'Click on a bar to see hourly details (Morning, Afternoon, Night)'}
+                  : 'Click on any bar below to expand hourly details'}
               </p>
             </div>
             <div className="flex gap-6 text-sm font-medium">
@@ -513,8 +513,8 @@ export default function Home() {
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                     formatter={(value: number, name: string) => [value, name === 'success' ? 'Approved' : 'Declined']}
                   />
-                  <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 4, 4, 0]} barSize={40} />
-                  <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[0, 4, 4, 0]} barSize={40} />
+                  <Bar dataKey="success" stackId="a" fill={COLORS.success} radius={[0, 4, 4, 0]} barSize={40} cursor="pointer" />
+                  <Bar dataKey="failed" stackId="a" fill={COLORS.danger} radius={[0, 4, 4, 0]} barSize={40} cursor="pointer" />
                 </BarChart>
               )}
             </ResponsiveContainer>
