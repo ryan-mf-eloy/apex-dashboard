@@ -119,8 +119,22 @@ export default function Home() {
       : { allowed: false, label: 'No Retry' };
   };
 
-  // Determine errors to display
-  const displayedErrors = showAllErrors ? error_data : error_data?.slice(0, 5);
+    // Get solution suggestion for error code
+    const getErrorSolution = (code: string) => {
+      const solutions: Record<string, string> = {
+        'ABECS-51': 'Suggest customer to use another card or contact bank.',
+        'ABECS-59': 'Review anti-fraud rules or contact customer to confirm.',
+        'ABECS-91': 'Retry transaction after a few minutes.',
+        'ABECS-57': 'Check if card brand is enabled in your merchant account.',
+        'ABECS-82': 'Ask customer to verify card details or use another card.',
+        'ABECS-83': 'Ask customer to verify PIN or use another card.',
+        'GEN-002': 'System error. Retry later or contact support.'
+      };
+      return solutions[code] || 'Monitor error rate and contact support if persistent.';
+    };
+
+    // Determine errors to display
+    const displayedErrors = showAllErrors ? error_data : error_data?.slice(0, 5);
 
   // Pagination logic
   const totalPages = Math.ceil((transactions?.length || 0) / itemsPerPage);
@@ -566,6 +580,12 @@ export default function Home() {
                         })()}
                       </div>
                       <h4 className="font-bold text-slate-900 text-base">{error.details}</h4>
+                      {!showAllErrors && (
+                        <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
+                          <Info size={12} className="text-blue-500" />
+                          {getErrorSolution(error.code)}
+                        </p>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-8 min-w-[240px] justify-end">
