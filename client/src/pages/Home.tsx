@@ -122,6 +122,7 @@ export default function Home() {
               {(kpis?.authorization?.total || 0) + (kpis?.capture?.total || 0)}
             </span>
           </div>
+          <p className="text-xs text-slate-400 mt-1 ml-11">Including only captures and authorizations</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
