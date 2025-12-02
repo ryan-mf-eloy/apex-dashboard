@@ -141,6 +141,77 @@
       "failed": 1
     }
   ],
+  "card_type_data": [
+    {
+      "type": "multiple",
+      "total": 836,
+      "success": 344,
+      "failed": 492,
+      "brands": [
+        {
+          "brand": "mastercard",
+          "total": 481,
+          "success": 188,
+          "failed": 293,
+          "rate": 39.08523908523909
+        },
+        {
+          "brand": "visa",
+          "total": 355,
+          "success": 156,
+          "failed": 199,
+          "rate": 43.94366197183099
+        }
+      ],
+      "approval_rate": 41.14832535885167
+    },
+    {
+      "type": "credit",
+      "total": 422,
+      "success": 212,
+      "failed": 210,
+      "brands": [
+        {
+          "brand": "visa",
+          "total": 211,
+          "success": 116,
+          "failed": 95,
+          "rate": 54.976303317535546
+        },
+        {
+          "brand": "mastercard",
+          "total": 211,
+          "success": 96,
+          "failed": 115,
+          "rate": 45.497630331753555
+        }
+      ],
+      "approval_rate": 50.23696682464455
+    },
+    {
+      "type": "debit",
+      "total": 19,
+      "success": 0,
+      "failed": 19,
+      "brands": [
+        {
+          "brand": "visa",
+          "total": 10,
+          "success": 0,
+          "failed": 10,
+          "rate": 0.0
+        },
+        {
+          "brand": "mastercard",
+          "total": 9,
+          "success": 0,
+          "failed": 9,
+          "rate": 0.0
+        }
+      ],
+      "approval_rate": 0.0
+    }
+  ],
   "error_data": [
     {
       "code": "ABECS-51",

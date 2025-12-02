@@ -309,6 +309,80 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Performance by Card Type Section */}
+      <div className="mb-12">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+            <CreditCard size={20} />
+          </div>
+          <h3 className="font-bold text-slate-800 text-xl">Performance by Card Type</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {data?.card_type_data?.map((type: any) => (
+            <div key={type.type} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="font-bold text-slate-900 text-lg capitalize">
+                  {type.type === 'multiple' ? 'Multiple' : type.type === 'credit' ? 'Credit' : 'Debit'}
+                </h4>
+                <span className={`px-2 py-1 rounded text-xs font-bold ${
+                  (100 - type.approval_rate) > 0 ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-500'
+                }`}>
+                  {(100 - type.approval_rate).toFixed(1)}%
+                </span>
+              </div>
+              
+              <div className="text-sm text-slate-500 mb-4">
+                {type.total} TRANSACTIONS
+              </div>
+              
+              {/* Progress Bar */}
+              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden flex mb-2">
+                <div 
+                  className="h-full bg-emerald-500" 
+                  style={{ width: `${type.approval_rate}%` }}
+                ></div>
+                <div 
+                  className="h-full bg-rose-500" 
+                  style={{ width: `${100 - type.approval_rate}%` }}
+                ></div>
+              </div>
+              
+              <div className="flex justify-between text-sm font-medium mb-6">
+                <div className="text-emerald-600">
+                  <span className="font-bold">{type.success}</span>
+                  <div className="text-xs text-slate-400 font-normal">Approved</div>
+                </div>
+                <div className="text-rose-600 text-right">
+                  <span className="font-bold">{type.failed}</span>
+                  <div className="text-xs text-slate-400 font-normal">Declined</div>
+                </div>
+              </div>
+              
+              <div className="border-t border-slate-100 pt-4">
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">
+                  BY BRAND
+                </div>
+                <div className="space-y-3">
+                  {type.brands?.map((brand: any) => (
+                    <div key={brand.brand} className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${brand.brand === 'visa' ? 'bg-blue-600' : 'bg-orange-500'}`}></div>
+                        <span className="font-medium text-slate-700 capitalize">{brand.brand}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-slate-400 text-xs">{brand.total} txns</span>
+                        <span className="font-bold text-rose-600">{(100 - brand.rate).toFixed(1)}%</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Brand Performance (Heatmap) */}
       <div id="brands" className="mb-12 scroll-mt-28">
         <div className="flex items-center gap-3 mb-6">
