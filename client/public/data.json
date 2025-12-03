@@ -157,7 +157,7 @@
     "error_data": [
       {
         "code": "ABECS-51",
-        "details": "INSUFFICIENT BALANCE/LIMIT",
+        "details": "Insufficient Funds / Limit Exceeded",
         "count": 210,
         "percentage": 29.085872576177284
       },
@@ -169,19 +169,19 @@
       },
       {
         "code": "ABECS-57",
-        "details": "TRANSACTION NOT ALLOWED FOR CARD | TEMPORARY BLOCK (E.G. DELINQUENCY) | NEW CARD WITHOUT UNBLOCKING (INCLUDES CARD BLOCKED BY CUSTOMER IN APP - E-COM NFC)",
+        "details": "Transaction Not Allowed for Card",
         "count": 78,
         "percentage": 10.80332409972299
       },
       {
         "code": "ABECS-59",
-        "details": "SUSPECTED FRAUD/TRAVEL WARNING",
+        "details": "Suspected Fraud",
         "count": 62,
         "percentage": 8.587257617728532
       },
       {
         "code": "ABECS-82",
-        "details": "Mastercard transaction not authorized. Contact issuer",
+        "details": "Invalid Card Data / CVV",
         "count": 49,
         "percentage": 6.786703601108034
       },
@@ -199,7 +199,7 @@
       },
       {
         "code": "ABECS-54",
-        "details": "EXPIRED CARD | INVALID EXPIRATION DATE",
+        "details": "Expired Card",
         "count": 23,
         "percentage": 3.1855955678670362
       },
@@ -223,31 +223,31 @@
       },
       {
         "code": "ABECS-63",
-        "details": "SECURITY VIOLATION (INVALID OR NOT PRESENT) | SUSPECTED FRAUD/TRAVEL WARNING",
+        "details": "Security Violation",
         "count": 10,
         "percentage": 1.3850415512465373
       },
       {
         "code": "ABECS-14",
-        "details": "CARD NUMBER DOES NOT BELONG TO ISSUER | INVALID CARD NUMBER",
+        "details": "Invalid Card Number",
         "count": 10,
         "percentage": 1.3850415512465373
       },
       {
         "code": "ABECS-62",
-        "details": "TEMPORARY BLOCK (E.G. DELINQUENCY) | DOMESTIC CARD - INTERNATIONAL TRANSACTION",
+        "details": "Restricted Card",
         "count": 8,
         "percentage": 1.10803324099723
       },
       {
         "code": "ABECS-61",
-        "details": "EXCESS AMOUNT/WITHDRAWAL",
+        "details": "Exceeds Withdrawal Amount Limit",
         "count": 6,
         "percentage": 0.8310249307479225
       },
       {
         "code": "ABECS-78",
-        "details": "NEW CARD WITHOUT UNBLOCKING (INCLUDES CARD BLOCKED BY CUSTOMER IN APP - E-COM NFC) - new cardholder not activated or card temporarily blocked",
+        "details": "Customer Unknown",
         "count": 5,
         "percentage": 0.6925207756232686
       },
@@ -265,7 +265,7 @@
       },
       {
         "code": "ABECS-15",
-        "details": "ISSUER NOT FOUND - INCORRECT BIN (acquirer denial)",
+        "details": "No Such Issuer",
         "count": 3,
         "percentage": 0.41551246537396125
       },
@@ -283,7 +283,7 @@
       },
       {
         "code": "ABECS-58",
-        "details": "TRANSACTION NOT ALLOWED TERMINAL CAPABILITY",
+        "details": "Transaction Not Permitted to Terminal",
         "count": 1,
         "percentage": 0.13850415512465375
       }
@@ -16808,7 +16808,7 @@
     "error_data": [
       {
         "code": "ABECS-51",
-        "details": "Credit function unavailable (multiple card). NO RETRY",
+        "details": "Insufficient Funds / Limit Exceeded",
         "count": 6800,
         "percentage": 41.15475397930158
       },
@@ -16826,7 +16826,7 @@
       },
       {
         "code": "ABECS-82",
-        "details": "Mastercard transaction not authorized. Contact issuer",
+        "details": "Invalid Card Data / CVV",
         "count": 1132,
         "percentage": 6.851056103613145
       },
@@ -16850,7 +16850,7 @@
       },
       {
         "code": "ABECS-59",
-        "details": "SUSPECTED FRAUD/TRAVEL WARNING",
+        "details": "Suspected Fraud",
         "count": 325,
         "percentage": 1.9669551534225018
       },
@@ -16862,7 +16862,7 @@
       },
       {
         "code": "ABECS-62",
-        "details": "DOMESTIC CARD - INTERNATIONAL TRANSACTION | TRANSACTION DENIED DUE TO LAW VIOLATION | CLOSED ACCOUNT",
+        "details": "Restricted Card",
         "count": 279,
         "percentage": 1.6885553470919326
       },
@@ -16886,55 +16886,55 @@
       },
       {
         "code": "ABECS-78",
-        "details": "NEW CARD WITHOUT UNBLOCKING (INCLUDES CARD BLOCKED BY CUSTOMER IN APP - E-COM NFC) - new cardholder not activated or card temporarily blocked",
+        "details": "Customer Unknown",
         "count": 66,
         "percentage": 0.3994432003873389
       },
       {
         "code": "ABECS-57",
-        "details": "TRANSACTION NOT ALLOWED FOR CARD | TEMPORARY BLOCK (E.G. DELINQUENCY) | NEW CARD WITHOUT UNBLOCKING (INCLUDES CARD BLOCKED BY CUSTOMER IN APP - E-COM NFC)",
+        "details": "Transaction Not Allowed for Card",
         "count": 49,
         "percentage": 0.2965563154390849
       },
       {
         "code": "ABECS-15",
-        "details": "ISSUER NOT FOUND - INCORRECT BIN (acquirer denial)",
+        "details": "No Such Issuer",
         "count": 22,
         "percentage": 0.1331477334624463
       },
       {
         "code": "ABECS-61",
-        "details": "EXCESS AMOUNT/WITHDRAWAL",
+        "details": "Exceeds Withdrawal Amount Limit",
         "count": 22,
         "percentage": 0.1331477334624463
       },
       {
         "code": "ABECS-65",
-        "details": "EXCEEDED WITHDRAWAL QUANTITY",
+        "details": "Exceeds Withdrawal Frequency Limit",
         "count": 16,
         "percentage": 0.09683471524541548
       },
       {
         "code": "ABECS-41",
-        "details": "LOST CARD",
+        "details": "Lost Card",
         "count": 7,
         "percentage": 0.04236518791986928
       },
       {
         "code": "ABECS-19",
-        "details": "ACQUIRER PROBLEM",
+        "details": "Re-enter Transaction",
         "count": 5,
         "percentage": 0.030260848514192338
       },
       {
         "code": "ABECS-63",
-        "details": "SECURITY VIOLATION (INVALID OR NOT PRESENT) | SUSPECTED FRAUD/TRAVEL WARNING",
+        "details": "Security Violation",
         "count": 4,
         "percentage": 0.02420867881135387
       },
       {
         "code": "ABECS-14",
-        "details": "CARD NUMBER DOES NOT BELONG TO ISSUER | INVALID CARD NUMBER",
+        "details": "Invalid Card Number",
         "count": 4,
         "percentage": 0.02420867881135387
       },
@@ -16946,13 +16946,13 @@
       },
       {
         "code": "ABECS-54",
-        "details": "EXPIRED CARD | INVALID EXPIRATION DATE",
+        "details": "Expired Card",
         "count": 4,
         "percentage": 0.02420867881135387
       },
       {
         "code": "ABECS-96",
-        "details": "SYSTEM FAILURE",
+        "details": "System Malfunction",
         "count": 4,
         "percentage": 0.02420867881135387
       },
@@ -16964,13 +16964,13 @@
       },
       {
         "code": "ABECS-43",
-        "details": "STOLEN CARD",
+        "details": "Stolen Card",
         "count": 1,
         "percentage": 0.006052169702838468
       },
       {
         "code": "ABECS-91",
-        "details": "ISSUER OFFLINE",
+        "details": "Issuer Unavailable / Timeout",
         "count": 1,
         "percentage": 0.006052169702838468
       },

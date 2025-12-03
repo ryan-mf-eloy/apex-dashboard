@@ -176,40 +176,89 @@ export default function Home() {
 
     // Get solution suggestion for error code with detailed steps
     const getErrorSolution = (code: string) => {
-      const solutions: Record<string, { short: string, details: string }> = {
-        'ABECS-51': {
-          short: 'Insufficient Funds: Suggest alternative card.',
-          details: 'Customer has insufficient balance. 1. Recommend using a different card. 2. If credit, suggest debit. 3. Do not retry immediately to avoid blocking.'
-        },
-        'ABECS-59': {
-          short: 'Suspected Fraud: Enable 3DS authentication.',
-          details: 'Transaction flagged as high risk. 1. Enable 3D Secure (3DS 2.0) to shift liability. 2. Use Zero Auth to validate card before charging. 3. Contact customer to confirm legitimacy.'
-        },
-        'ABECS-91': {
-          short: 'Issuer Down: Retry later.',
-          details: 'Bank system is temporarily unavailable. 1. Wait 15-30 minutes before retrying. 2. Do not retry repeatedly in short intervals. 3. If persistent, notify support.'
-        },
-        'ABECS-57': {
-          short: 'Not Permitted: Check merchant category (MCC).',
-          details: 'Transaction not allowed for this card type. 1. Verify if your MCC is blocked by the issuer. 2. Check if card brand is enabled in your acquirer settings.'
-        },
-        'ABECS-82': {
-          short: 'Invalid Card: Validate via Zero Auth.',
-          details: 'Card number is invalid or malformed. 1. Implement Zero Auth ($0.00 verification) at checkout. 2. Use Luhn algorithm check on frontend. 3. Ask customer to re-enter details.'
-        },
-        'ABECS-83': {
-          short: 'Invalid PIN/Data: Verify input fields.',
-          details: 'Authentication data is incorrect. 1. Ask customer to re-enter CVV and Expiry Date. 2. Ensure encryption keys are up to date. 3. Suggest using a digital wallet (Apple/Google Pay).'
-        },
-        'GEN-002': {
-          short: 'System Error: Contact technical support.',
-          details: 'Generic gateway error. 1. Check API logs for specific sub-codes. 2. Verify API credentials. 3. Retry once after 5 minutes.'
-        }
-      };
-      return solutions[code] || { 
-        short: 'Monitor error rate.', 
-        details: 'No specific recommendation available. Monitor for spikes and contact acquirer support if rate exceeds 1%.' 
-      };
+      // Source: https://docs.cielo.com.br/ecommerce-cielo/page/abecs
+      switch (code) {
+        case 'ABECS-51':
+          return {
+            short: "Insufficient Funds. Reversible.",
+            details: (
+              <div className="space-y-2">
+                <p className="font-semibold text-rose-200">Official ABECS Action:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                  <li><strong>Do NOT retry automatically</strong> immediately.</li>
+                  <li>Ask customer to use a different card or contact issuer.</li>
+                  <li>If credit card failed, suggest trying debit (and vice-versa).</li>
+                  <li>Wait at least 24h before system retry if no customer action.</li>
+                </ul>
+              </div>
+            )
+          };
+        case 'ABECS-59':
+          return {
+            short: "Suspected Fraud. Irreversible.",
+            details: (
+              <div className="space-y-2">
+                <p className="font-semibold text-rose-200">Security Protocol:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                  <li>Transaction blocked by issuer's fraud detection.</li>
+                  <li><strong>Mandatory:</strong> Use 3D Secure (3DS 2.0) for next attempt.</li>
+                  <li>Contact customer to verify identity if high value.</li>
+                  <li>Do not retry without changing parameters (e.g., auth method).</li>
+                </ul>
+              </div>
+            )
+          };
+        case 'ABECS-82':
+          return {
+            short: "Invalid Card Data. Fix Data.",
+            details: (
+              <div className="space-y-2">
+                <p className="font-semibold text-rose-200">Validation Step:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                  <li>Incorrect CVV, Expiry Date, or Card Number.</li>
+                  <li>Ask customer to re-enter data carefully.</li>
+                  <li><strong>Best Practice:</strong> Implement Zero Auth (Account Verification) before charging.</li>
+                  <li>Check if card is expired (ABECS-54).</li>
+                </ul>
+              </div>
+            )
+          };
+        case 'ABECS-57':
+          return {
+            short: "Not Allowed. Contact Bank.",
+            details: (
+              <div className="space-y-2">
+                <p className="font-semibold text-rose-200">Issuer Restriction:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                  <li>Card not enabled for E-commerce/Online.</li>
+                  <li>Card blocked by customer in banking app.</li>
+                  <li>Savings card used as Credit (or vice-versa).</li>
+                  <li><strong>Action:</strong> Customer must contact bank to unblock.</li>
+                </ul>
+              </div>
+            )
+          };
+        case 'ABECS-91':
+          return {
+            short: "Issuer Unavailable. Retry Later.",
+            details: (
+              <div className="space-y-2">
+                <p className="font-semibold text-rose-200">System Status:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                  <li>Issuer bank system is down or timed out.</li>
+                  <li><strong>Action:</strong> Safe to retry after 15-30 minutes.</li>
+                  <li>Implement exponential backoff (1m, 5m, 15m).</li>
+                  <li>Check Acquirer Status Page for widespread outages.</li>
+                </ul>
+              </div>
+            )
+          };
+        default:
+          return {
+            short: "Generic Error. Check details.",
+            details: "Review specific error message from acquirer. If persistent, contact support."
+          };
+      }
     };
 
     // Determine errors to display
