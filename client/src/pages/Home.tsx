@@ -30,7 +30,9 @@ const COLORS = {
 };
 
 export default function Home() {
+  const [allData, setAllData] = useState<any>(null);
   const [data, setData] = useState<any>(null);
+  const [selectedMerchant, setSelectedMerchant] = useState<string>('APEX');
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null);
   const [showAllErrors, setShowAllErrors] = useState(false);
@@ -80,7 +82,8 @@ export default function Home() {
     fetch("/data.json")
       .then(res => res.json())
       .then(data => {
-        setData(data);
+        setAllData(data);
+        setData(data['APEX']);
         setLoading(false);
       })
       .catch(err => {
@@ -88,6 +91,12 @@ export default function Home() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (allData && selectedMerchant) {
+      setData(allData[selectedMerchant]);
+    }
+  }, [selectedMerchant, allData]);
 
   if (loading) {
     return (
@@ -218,10 +227,22 @@ export default function Home() {
       {/* Header Section */}
       <div id="overview" className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 scroll-mt-28">
         <div>
-          <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Payment Performance</h2>
-          <p className="text-slate-500 mt-2 text-lg">
-            Approval diagnostics and revenue recovery opportunities
-          </p>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="relative">
+              <select 
+                value={selectedMerchant}
+                onChange={(e) => setSelectedMerchant(e.target.value)}
+                className="appearance-none bg-white border border-slate-200 text-slate-900 font-bold text-2xl py-2 pl-4 pr-10 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+              >
+                <option value="APEX">APEX COM SUP ALIM LTDA</option>
+                <option value="Fenix">FENIX PAYMENTS</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-500">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div className="text-sm text-slate-500">Merchant ID: {selectedMerchant === 'APEX' ? 'HUB-8291' : 'HUB-9942'}</div>
         </div>
         <div className="flex flex-col items-end justify-center bg-white px-6 py-3 rounded-xl border border-slate-200 shadow-sm">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Analyzed Period</span>
@@ -233,120 +254,116 @@ export default function Home() {
       </div>
 
       {/* KPI Section */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm mb-12 overflow-hidden">
-        <div className="p-6 border-b border-slate-100 bg-slate-50/50">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {/* No Capture Card */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg text-blue-600">
-                <ListFilter size={20} />
+              <div className="w-1 h-8 bg-blue-600 rounded-full"></div>
+              <div>
+                <h3 className="text-base font-bold text-slate-800">No Capture</h3>
+                <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Auth Only</p>
               </div>
-              <h3 className="font-bold text-slate-800 text-lg">Transaction Overview</h3>
             </div>
-            <div className="flex flex-col items-end">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">Total Transactions:</span>
-                <span className="text-lg font-bold text-slate-900">
-                  {(kpis?.authorization?.total || 0) + (kpis?.capture?.total || 0)}
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-1">Including only captures and authorizations</p>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-slate-900">{kpis?.authorization?.total || 0}</div>
             </div>
+          </div>
+          
+          <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
+             <div className="flex flex-col">
+                <span className="text-xs text-slate-500 mb-1">Approved</span>
+                <span className="text-lg font-bold text-emerald-600">{kpis?.authorization?.success || 0}</span>
+             </div>
+             <div className="h-8 w-px bg-slate-100"></div>
+             <div className="flex flex-col text-right">
+                <span className="text-xs text-slate-500 mb-1">Rate</span>
+                <span className={`text-lg font-bold ${(kpis?.authorization?.rate || 0) > 70 ? 'text-emerald-600' : 'text-rose-600'}`}>{(kpis?.authorization?.rate || 0).toFixed(1)}%</span>
+             </div>
           </div>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-          {/* Authorization */}
-          <div className="p-8 hover:bg-slate-50/30 transition-colors">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-8 bg-blue-500 rounded-full"></span>
-                <div>
-                  <div className="flex items-center gap-3">
-                    <h4 className="font-bold text-slate-900 text-xl">No Capture</h4>
-                    <span className={cn(
-                      "px-2 py-0.5 rounded text-xs font-bold border",
-                      (kpis?.authorization?.rate || 0) > 50 
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-                        : "bg-rose-50 text-rose-700 border-rose-200"
-                    )}>
-                      {kpis?.authorization?.rate?.toFixed(2) || "0.00"}% Appr.
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization Only</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="block text-3xl font-bold text-slate-900">{kpis?.authorization?.total || 0}</span>
-                <span className="text-sm text-slate-500">Total</span>
+
+        {/* With Capture Card */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-8 bg-indigo-600 rounded-full"></div>
+              <div>
+                <h3 className="text-base font-bold text-slate-800">With Capture</h3>
+                <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Auth + Capture</p>
               </div>
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                <div className="flex items-center gap-2 mb-2 text-emerald-700">
-                  <CheckCircle2 size={16} />
-                  <span className="text-xs font-bold uppercase">Approved</span>
-                </div>
-                <span className="block text-2xl font-bold text-emerald-700">{kpis?.authorization?.success || 0}</span>
-                <span className="text-sm font-medium text-emerald-600/80">{kpis?.authorization?.rate?.toFixed(2) || "0.00"}%</span>
-              </div>
-
-              <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
-                <div className="flex items-center gap-2 mb-2 text-rose-700">
-                  <XCircle size={16} />
-                  <span className="text-xs font-bold uppercase">Declined</span>
-                </div>
-                <span className="block text-2xl font-bold text-rose-700">{kpis?.authorization?.failed || 0}</span>
-                <span className="text-sm font-medium text-rose-600/80">{((100 - (kpis?.authorization?.rate || 0))).toFixed(2)}%</span>
-              </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-slate-900">{kpis?.capture?.total || 0}</div>
             </div>
           </div>
+          
+          <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
+             <div className="flex flex-col">
+                <span className="text-xs text-slate-500 mb-1">Approved</span>
+                <span className="text-lg font-bold text-emerald-600">{kpis?.capture?.success || 0}</span>
+             </div>
+             <div className="h-8 w-px bg-slate-100"></div>
+             <div className="flex flex-col text-right">
+                <span className="text-xs text-slate-500 mb-1">Rate</span>
+                <span className={`text-lg font-bold ${(kpis?.capture?.rate || 0) > 70 ? 'text-emerald-600' : 'text-rose-600'}`}>{(kpis?.capture?.rate || 0).toFixed(1)}%</span>
+             </div>
+          </div>
+        </div>
 
-          {/* Capture */}
-          <div className="p-8 hover:bg-slate-50/30 transition-colors">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-8 bg-indigo-500 rounded-full"></span>
-                <div>
-                  <div className="flex items-center gap-3">
-                    <h4 className="font-bold text-slate-900 text-xl">With Capture</h4>
-                    <span className={cn(
-                      "px-2 py-0.5 rounded text-xs font-bold border",
-                      (kpis?.capture?.rate || 0) > 50 
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
-                        : "bg-rose-50 text-rose-700 border-rose-200"
-                    )}>
-                      {kpis?.capture?.rate?.toFixed(2) || "0.00"}% Appr.
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Authorization + Capture</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="block text-3xl font-bold text-slate-900">{kpis?.capture?.total || 0}</span>
-                <span className="text-sm text-slate-500">Total</span>
+        {/* Zero Auth Card */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-8 bg-purple-600 rounded-full"></div>
+              <div>
+                <h3 className="text-base font-bold text-slate-800">Zero Auth</h3>
+                <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Card Verification</p>
               </div>
             </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-slate-900">{kpis?.zero_auth_stats?.total || 0}</div>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
+             <div className="flex flex-col">
+                <span className="text-xs text-slate-500 mb-1">Success</span>
+                <span className="text-lg font-bold text-emerald-600">{kpis?.zero_auth_stats?.success || 0}</span>
+             </div>
+             <div className="h-8 w-px bg-slate-100"></div>
+             <div className="flex flex-col text-right">
+                <span className="text-xs text-slate-500 mb-1">Rate</span>
+                <span className={`text-lg font-bold ${(kpis?.zero_auth_rate || 0) > 70 ? 'text-emerald-600' : 'text-rose-600'}`}>{(kpis?.zero_auth_rate || 0).toFixed(1)}%</span>
+             </div>
+          </div>
+        </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
-                <div className="flex items-center gap-2 mb-2 text-emerald-700">
-                  <CheckCircle2 size={16} />
-                  <span className="text-xs font-bold uppercase">Approved</span>
-                </div>
-                <span className="block text-2xl font-bold text-emerald-700">{kpis?.capture?.success || 0}</span>
-                <span className="text-sm font-medium text-emerald-600/80">{kpis?.capture?.rate?.toFixed(2) || "0.00"}%</span>
-              </div>
-
-              <div className="bg-rose-50 rounded-xl p-4 border border-rose-100">
-                <div className="flex items-center gap-2 mb-2 text-rose-700">
-                  <XCircle size={16} />
-                  <span className="text-xs font-bold uppercase">Declined</span>
-                </div>
-                <span className="block text-2xl font-bold text-rose-700">{kpis?.capture?.failed || 0}</span>
-                <span className="text-sm font-medium text-rose-600/80">{((100 - (kpis?.capture?.rate || 0))).toFixed(2)}%</span>
+        {/* Debit Card */}
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+          <div className="flex justify-between items-start mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1 h-8 bg-orange-500 rounded-full"></div>
+              <div>
+                <h3 className="text-base font-bold text-slate-800">Debit</h3>
+                <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Debit Transactions</p>
               </div>
             </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-slate-900">{kpis?.debit_stats?.total || 0}</div>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
+             <div className="flex flex-col">
+                <span className="text-xs text-slate-500 mb-1">Success</span>
+                <span className="text-lg font-bold text-emerald-600">{kpis?.debit_stats?.success || 0}</span>
+             </div>
+             <div className="h-8 w-px bg-slate-100"></div>
+             <div className="flex flex-col text-right">
+                <span className="text-xs text-slate-500 mb-1">Rate</span>
+                <span className={`text-lg font-bold ${(kpis?.debit_rate || 0) > 70 ? 'text-emerald-600' : 'text-rose-600'}`}>{(kpis?.debit_rate || 0).toFixed(1)}%</span>
+             </div>
           </div>
         </div>
       </div>
