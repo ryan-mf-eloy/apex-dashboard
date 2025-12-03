@@ -122,16 +122,16 @@ export default function Home() {
 
   // Heatmap color function
   const getHeatmapColor = (value: number) => {
-    if (value === 0) return '#FFFBEB'; // Very light yellow
-    if (value < 20) return '#FDE68A'; // Light yellow
-    if (value < 50) return '#FCD34D'; // Medium yellow
-    if (value < 80) return '#FB923C'; // Orange
-    if (value < 100) return '#EF4444'; // Light red
-    return '#991B1B'; // Dark red
+    if (value === 0) return '#F8FAFC'; // Slate-50 (Empty)
+    if (value < 5) return '#FEF3C7'; // Amber-100
+    if (value < 10) return '#FCD34D'; // Amber-300
+    if (value < 20) return '#FB923C'; // Orange-400
+    if (value < 40) return '#EF4444'; // Red-500
+    return '#991B1B'; // Red-800
   };
 
   const getHeatmapTextColor = (value: number) => {
-    return value > 80 ? 'white' : '#1E293B';
+    return value >= 20 ? 'white' : '#1E293B';
   };
 
   // Get icon for error code
@@ -768,8 +768,8 @@ export default function Home() {
                     Brand
                   </th>
                   {heatmap_columns?.map((col: string) => (
-                    <th key={col} className="px-6 py-4 bg-slate-50/50 text-slate-500 font-bold uppercase tracking-wider text-xs text-center">
-                      {col}
+                    <th key={col} className="px-4 py-4 bg-slate-50/50 text-slate-500 font-bold uppercase tracking-wider text-xs text-center min-w-[60px]">
+                      {col.padStart(2, '0')}h
                     </th>
                   ))}
                 </tr>
@@ -802,30 +802,30 @@ export default function Home() {
             </table>
           </div>
           
-          <div className="mt-4 flex justify-end gap-6 text-xs font-medium text-slate-500">
+          <div className="mt-4 flex justify-end gap-6 text-xs font-medium text-slate-500 flex-wrap">
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded bg-[#FFFBEB] border border-slate-200"></span>
-              <span>0 Occurrences</span>
+              <span className="w-3 h-3 rounded bg-[#F8FAFC] border border-slate-200"></span>
+              <span>0</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded bg-[#FDE68A]"></span>
-              <span>&lt; 20</span>
+              <span className="w-3 h-3 rounded bg-[#FEF3C7]"></span>
+              <span>1 - 4</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#FCD34D]"></span>
-              <span>20 - 50</span>
+              <span>5 - 9</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#FB923C]"></span>
-              <span>50 - 80</span>
+              <span>10 - 19</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#EF4444]"></span>
-              <span>80 - 100</span>
+              <span>20 - 39</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-3 h-3 rounded bg-[#991B1B]"></span>
-              <span>&gt; 100</span>
+              <span>40+</span>
             </div>
           </div>
         </div>
