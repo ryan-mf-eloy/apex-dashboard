@@ -12,11 +12,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <header className="bg-white border-b border-slate-200 h-16 fixed top-0 left-0 right-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-center relative">
           
-          {/* Center: Merchant Name */}
-          <div className="text-center">
-            <div className="text-sm font-bold text-slate-900">APEX COM SUP ALIM LTDA</div>
-            <div className="text-[10px] text-slate-500">Merchant ID: HUB-8291</div>
-          </div>
+          {/* Center: Merchant Name - Removed */}
 
         </div>
       </header>
