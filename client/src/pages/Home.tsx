@@ -253,6 +253,36 @@ export default function Home() {
               </div>
             )
           };
+        case 'ABECS-83':
+          return {
+            short: "Invalid PIN/Data. Verify Input.",
+            details: (
+              <div className="space-y-2">
+                <p className="font-semibold text-rose-200">Authentication Error:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                  <li>Incorrect Password/PIN or Security Code.</li>
+                  <li>Encryption key mismatch (check HSM/Gateway).</li>
+                  <li><strong>Action:</strong> Ask customer to re-enter CVV/PIN carefully.</li>
+                  <li>Suggest using a digital wallet (Apple/Google Pay).</li>
+                </ul>
+              </div>
+            )
+          };
+        case 'GEN-002':
+          return {
+            short: "System Error. Contact Support.",
+            details: (
+              <div className="space-y-2">
+                <p className="font-semibold text-rose-200">Gateway Error:</p>
+                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                  <li>Generic failure in payment gateway processing.</li>
+                  <li><strong>Action:</strong> Check API logs for specific sub-codes.</li>
+                  <li>Verify API credentials and endpoint status.</li>
+                  <li>Retry once after 5 minutes if intermittent.</li>
+                </ul>
+              </div>
+            )
+          };
         default:
           return {
             short: "Generic Error. Check details.",
