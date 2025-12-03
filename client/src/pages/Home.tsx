@@ -270,15 +270,20 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
+          <div className="grid grid-cols-2 gap-4 mt-2 pt-4 border-t border-slate-50">
              <div className="flex flex-col">
                 <span className="text-xs text-slate-500 mb-1">Approved</span>
-                <span className="text-lg font-bold text-emerald-600">{kpis?.authorization?.success || 0}</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-lg font-bold text-emerald-600">{kpis?.authorization?.success || 0}</span>
+                  <span className="text-xs font-medium text-emerald-600/80">{(kpis?.authorization?.rate || 0).toFixed(1)}%</span>
+                </div>
              </div>
-             <div className="h-8 w-px bg-slate-100"></div>
              <div className="flex flex-col text-right">
-                <span className="text-xs text-slate-500 mb-1">Rate</span>
-                <span className={`text-lg font-bold ${(kpis?.authorization?.rate || 0) > 70 ? 'text-emerald-600' : 'text-rose-600'}`}>{(kpis?.authorization?.rate || 0).toFixed(1)}%</span>
+                <span className="text-xs text-slate-500 mb-1">Declined</span>
+                <div className="flex items-baseline gap-2 justify-end">
+                  <span className="text-lg font-bold text-rose-600">{kpis?.authorization?.failed || 0}</span>
+                  <span className="text-xs font-medium text-rose-600/80">{(100 - (kpis?.authorization?.rate || 0)).toFixed(1)}%</span>
+                </div>
              </div>
           </div>
         </div>
@@ -298,15 +303,20 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
+          <div className="grid grid-cols-2 gap-4 mt-2 pt-4 border-t border-slate-50">
              <div className="flex flex-col">
                 <span className="text-xs text-slate-500 mb-1">Approved</span>
-                <span className="text-lg font-bold text-emerald-600">{kpis?.capture?.success || 0}</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-lg font-bold text-emerald-600">{kpis?.capture?.success || 0}</span>
+                  <span className="text-xs font-medium text-emerald-600/80">{(kpis?.capture?.rate || 0).toFixed(1)}%</span>
+                </div>
              </div>
-             <div className="h-8 w-px bg-slate-100"></div>
              <div className="flex flex-col text-right">
-                <span className="text-xs text-slate-500 mb-1">Rate</span>
-                <span className={`text-lg font-bold ${(kpis?.capture?.rate || 0) > 70 ? 'text-emerald-600' : 'text-rose-600'}`}>{(kpis?.capture?.rate || 0).toFixed(1)}%</span>
+                <span className="text-xs text-slate-500 mb-1">Declined</span>
+                <div className="flex items-baseline gap-2 justify-end">
+                  <span className="text-lg font-bold text-rose-600">{kpis?.capture?.failed || 0}</span>
+                  <span className="text-xs font-medium text-rose-600/80">{(100 - (kpis?.capture?.rate || 0)).toFixed(1)}%</span>
+                </div>
              </div>
           </div>
         </div>
@@ -326,15 +336,20 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
+          <div className="grid grid-cols-2 gap-4 mt-2 pt-4 border-t border-slate-50">
              <div className="flex flex-col">
                 <span className="text-xs text-slate-500 mb-1">Success</span>
-                <span className="text-lg font-bold text-emerald-600">{kpis?.zero_auth_stats?.success || 0}</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-lg font-bold text-emerald-600">{kpis?.zero_auth_stats?.success || 0}</span>
+                  <span className="text-xs font-medium text-emerald-600/80">{(kpis?.zero_auth_rate || 0).toFixed(1)}%</span>
+                </div>
              </div>
-             <div className="h-8 w-px bg-slate-100"></div>
              <div className="flex flex-col text-right">
-                <span className="text-xs text-slate-500 mb-1">Rate</span>
-                <span className={`text-lg font-bold ${(kpis?.zero_auth_rate || 0) > 70 ? 'text-emerald-600' : 'text-rose-600'}`}>{(kpis?.zero_auth_rate || 0).toFixed(1)}%</span>
+                <span className="text-xs text-slate-500 mb-1">Failed</span>
+                <div className="flex items-baseline gap-2 justify-end">
+                  <span className="text-lg font-bold text-rose-600">{kpis?.zero_auth_stats?.failed || 0}</span>
+                  <span className="text-xs font-medium text-rose-600/80">{(100 - (kpis?.zero_auth_rate || 0)).toFixed(1)}%</span>
+                </div>
              </div>
           </div>
         </div>
@@ -354,15 +369,20 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-2 pt-4 border-t border-slate-50">
+          <div className="grid grid-cols-2 gap-4 mt-2 pt-4 border-t border-slate-50">
              <div className="flex flex-col">
                 <span className="text-xs text-slate-500 mb-1">Success</span>
-                <span className="text-lg font-bold text-emerald-600">{kpis?.debit_stats?.success || 0}</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-lg font-bold text-emerald-600">{kpis?.debit_stats?.success || 0}</span>
+                  <span className="text-xs font-medium text-emerald-600/80">{(kpis?.debit_rate || 0).toFixed(1)}%</span>
+                </div>
              </div>
-             <div className="h-8 w-px bg-slate-100"></div>
              <div className="flex flex-col text-right">
-                <span className="text-xs text-slate-500 mb-1">Rate</span>
-                <span className={`text-lg font-bold ${(kpis?.debit_rate || 0) > 70 ? 'text-emerald-600' : 'text-rose-600'}`}>{(kpis?.debit_rate || 0).toFixed(1)}%</span>
+                <span className="text-xs text-slate-500 mb-1">Failed</span>
+                <div className="flex items-baseline gap-2 justify-end">
+                  <span className="text-lg font-bold text-rose-600">{kpis?.debit_stats?.failed || 0}</span>
+                  <span className="text-xs font-medium text-rose-600/80">{(100 - (kpis?.debit_rate || 0)).toFixed(1)}%</span>
+                </div>
              </div>
           </div>
         </div>
