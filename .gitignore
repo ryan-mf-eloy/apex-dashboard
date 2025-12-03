@@ -104,3 +104,6 @@ temp/
 *.db
 *.sqlite
 *.sqlite3
+
+# CSV data files (will be updated manually via upload)
+*.csv
